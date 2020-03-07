@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="DenOfArt.Views.LoginPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid BackgroundColor="White"  Margin="20,0,20,0" VerticalOptions="StartAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Image Source="logo.png" Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
+               <!-- <Label Text="Dent of Art" FontSize="36" FontAttributes="Bold" Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" /> -->
+                <Entry Placeholder="Username" FontSize="16" x:Name="EntryUser" Grid.Row="1"/>
+                <Entry Placeholder="Password" IsPassword="true" FontSize="16" x:Name="EntryPassword" Grid.Row="2"/>
+                <Button Text="Login" Grid.Row="3" BackgroundColor="#0077be" TextColor="White" Clicked="Login_Clicked"/>
+                <Button Text="Sign Up" Grid.Row="4" Clicked="Signup_Clicked"/>
+                <StackLayout Grid.Row="5">
+                    <Label Text="Forgot Password?" TextColor="Blue" TextDecorations="Underline"
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalOptions="CenterAndExpand" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ForgotPassword_Clicked"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
