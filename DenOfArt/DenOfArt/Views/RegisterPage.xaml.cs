@@ -17,6 +17,7 @@ namespace DenOfArt.Views
     {
         public RegisterPage()
         {
+            NavigationPage.SetHasNavigationBar(this, true);
             InitializeComponent();
         }
 

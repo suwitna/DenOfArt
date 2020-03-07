@@ -14,23 +14,48 @@ namespace DenOfArt.Views
     {
         public MainPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
             MasterPage.ListView.ItemSelected += ListView_ItemSelected;
         }
 
-        private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = e.SelectedItem as MainPageMasterMenuItem;
             if (item == null)
                 return;
 
-            var page = (Page)Activator.CreateInstance(item.TargetType);
-            page.Title = item.Title;
+            if (item.Id == 5)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    var result = await this.DisplayAlert(null, "ต้องการออกจากระบบ?", "ตกลง", "ยกเลิก");
 
-            Detail = new NavigationPage(page);
-            IsPresented = false;
+                    if (result)
+                    {
+                        Application.Current.Properties.Clear();
+                        var page = (Page)Activator.CreateInstance(typeof(LoginPage));
 
-            MasterPage.ListView.SelectedItem = null;
+                        Detail = new NavigationPage(page);
+                        IsPresented = false;
+
+                        MasterPage.ListView.SelectedItem = null;
+                    }
+                    else
+                    {
+                        MasterPage.ListView.SelectedItem = null;
+                    }
+                });
+            }
+            else 
+            { 
+                var page = (Page)Activator.CreateInstance(item.TargetType);
+                page.Title = item.Title;
+
+                Detail = new NavigationPage(page);
+                IsPresented = false;
+
+                MasterPage.ListView.SelectedItem = null;
+            }
         }
     }
 }

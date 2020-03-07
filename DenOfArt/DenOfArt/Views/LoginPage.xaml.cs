@@ -12,7 +12,10 @@ namespace DenOfArt.Views
     {
         public LoginPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
+
+            Application.Current.Properties.Clear();
         }
        
         async void ForgotPassword_Clicked(object sender, EventArgs e)
@@ -30,9 +33,10 @@ namespace DenOfArt.Views
             var db = new SQLiteConnection(dbpath);
             var myquery = db.Table<RegUserTable>().Where(u => u.UserName.Equals(EntryUser.Text) && u.Password.Equals(EntryPassword.Text)).FirstOrDefault();
             
-            if(myquery != null)
+            if (myquery != null)
             {
-                App.Current.MainPage = new NavigationPage(new MainPage());
+                Application.Current.Properties.Add("USER_NAME", myquery.UserName);
+                App.Current.MainPage = new MainPage();
             }
             else
             {

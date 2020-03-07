@@ -6,10 +6,10 @@
              mc:Ignorable="d"
              x:Class="DenOfArt.Views.LoginPage">
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout BackgroundColor="White">
             <Grid BackgroundColor="White"  Margin="20,0,20,0" VerticalOptions="StartAndExpand">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="250"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>

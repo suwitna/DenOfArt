@@ -19,6 +19,7 @@ namespace DenOfArt.Views
         public PasswordPage()
         {
             InitializeComponent();
+            NavigationPage.SetHasNavigationBar(this, true);
         }
 
         async void Request_Clicked(object sender, EventArgs e)

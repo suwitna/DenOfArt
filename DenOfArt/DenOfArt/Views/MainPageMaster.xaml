@@ -8,7 +8,7 @@
              Title="Master">
   <StackLayout>
     <ListView x:Name="MenuItemsListView"
-              SeparatorVisibility="None"
+              SeparatorVisibility="Default"
               HasUnevenRows="true"
               ItemsSource="{Binding MenuItems}">
             <d:ListView.ItemsSource>
@@ -24,7 +24,7 @@
       <ListView.Header>
         <Grid BackgroundColor="#03A9F4">
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
           </Grid.ColumnDefinitions>
@@ -34,18 +34,21 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
           </Grid.RowDefinitions>
+
+          <Image Source="logo.png" Grid.Column="0" Grid.Row="1" VerticalOptions="CenterAndExpand"/>
           <Label
               Grid.Column="1"
               Grid.Row="1"
               Text="Deo Of Art"
               FontFamily="FontAwesome"
               TextColor="White"
+              VerticalOptions="CenterAndExpand"
               Style="{DynamicResource SubtitleStyle}"/>
         </Grid>
       </ListView.Header>
       <ListView.ItemTemplate>
         <DataTemplate>
-          <ViewCell>
+            <ViewCell>
                 <Grid Padding="5,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="30"/>
