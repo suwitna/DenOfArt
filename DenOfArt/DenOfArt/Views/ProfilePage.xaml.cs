@@ -39,6 +39,42 @@ namespace DenOfArt.Views
                 {
 
                 }
+
+                var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+                if (profile != null)
+                {
+                    EntryFirstName.Text = profile.FirstName;
+                    EntryLastName.Text = profile.LastName;
+
+                    if (profile.Content != null)
+                    {
+                        ImageBytes = profile.Content;
+                        Stream sm = BytesToStream(ImageBytes);
+                        selectedImage.Source = ImageSource.FromStream(() => sm);
+                    }
+                    
+                    if(profile.Gender != null)
+                    {
+                        SelectGender.SelectedItem = profile.Gender;
+                    }
+                    
+                    if(profile.Age != null)
+                    { 
+                        EntryAge.Text = profile.Age;
+                        StepperAge.Value = Convert.ToInt32(profile.Age);
+                    }
+
+                    if (profile.DateOfBirth != null)
+                    {
+                        DateTime date = DateTime.ParseExact(profile.DateOfBirth, "dd/MM/yyyy", null);
+                        SelectDateOfBirth.Date = date;
+                    }
+
+                    if(profile.PhoneNumber != null)
+                    {
+                        EntryUserPhoneNumber.Text = profile.PhoneNumber;
+                    }
+                }
             }
         }
 
@@ -115,7 +151,7 @@ namespace DenOfArt.Views
 
             if (selectedImageFile == null)
             {
-                await DisplayAlert(null, "ไม่สามารถเปิดรูปได้\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E103)", "ตกลง", null);
+                await DisplayAlert(null, "ไม่สามารถเปิดรูปได้\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E103)", null, "ตกลง");
                 return;
             }
 
@@ -159,16 +195,16 @@ namespace DenOfArt.Views
             return stream;
         }
 
-        private void SaveProfile(string username, string email)
+        private async void SaveProfile(string username, string email)
         {
             var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
             var db = new SQLiteConnection(dbpath);
+            db.CreateTable<ProfileTable>();
+
             var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
 
             if (item == null)
             {
-                db.CreateTable<ProfileTable>();
-
                 item = new ProfileTable()
                 {
                     UserName = username,
@@ -176,7 +212,7 @@ namespace DenOfArt.Views
                     LastName = EntryLastName.Text,
                     Gender = SelectGender.SelectedItem.ToString(),
                     Age = EntryAge.Text,
-                    DateOfBirth = EntryAge.Text,
+                    DateOfBirth = SelectDateOfBirth.ToString(),
                     Address1 = "",
                     Address2 = "",
                     Address3 = "",
@@ -191,12 +227,7 @@ namespace DenOfArt.Views
                 db.Insert(item);
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", "ตกลง", null);
-
-                    if (result)
-                    {
-                        await Navigation.PushAsync(new LoginPage());
-                    }
+                    var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", null, "ตกลง");
                 });
             }
             else
@@ -205,7 +236,7 @@ namespace DenOfArt.Views
                 item.LastName = EntryLastName.Text;
                 item.Gender = SelectGender.SelectedItem.ToString();
                 item.Age = EntryAge.Text;
-                item.DateOfBirth = EntryAge.Text;
+                item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
                 item.Address1 = "";
                 item.Address2 = "";
                 item.Address3 = "";

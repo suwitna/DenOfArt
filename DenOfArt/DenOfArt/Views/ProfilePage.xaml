@@ -25,10 +25,24 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackLayout Grid.Row="0" Grid.ColumnSpan="4">
+                   
                     <Label Text="ข้อมูลส่วนตัว" FontSize="16" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-
-                    <Image x:Name="selectedImage" HeightRequest="150"/>
-                    <Button Text="Browse" Clicked="Button_Clicked_1"/>
+                    <Frame CornerRadius="100" 
+                            HeightRequest="150"
+                            WidthRequest="150"
+                            HorizontalOptions="Center"
+                            Padding="0"
+                            IsClippedToBounds="True">
+                        <Image x:Name="selectedImage" Scale="1.8" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer
+                                Tapped="Button_Clicked_1"
+                                NumberOfTapsRequired="1" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Frame>
+                    
+                    <Label Text="รูปโปรไฟล์" HorizontalOptions="CenterAndExpand"/>
                 </StackLayout>
                 <StackLayout Grid.Row="1" Grid.Column="0">
                     <Entry Placeholder="ชื่อ" FontSize="16" x:Name="EntryFirstName" IsEnabled="True"/>
@@ -49,7 +63,7 @@
                     <Entry Placeholder="อายุ" FontSize="16" x:Name="EntryAge" IsEnabled="False"/>
                 </StackLayout>
                 <StackLayout Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2">
-                    <Stepper Value="20" Maximum="150" Minimum="1" Increment="1" ValueChanged="Stepper_ValueChanged"/>
+                    <Stepper x:Name="StepperAge" Value="20" Maximum="150" Minimum="1" Increment="1" ValueChanged="Stepper_ValueChanged"/>
                 </StackLayout>
                 <StackLayout Grid.Row="3" Grid.Column="0">
                     <Label Text="วันเกิด (วัน/เดือน/ปี)" FontSize="16" VerticalOptions="CenterAndExpand"/>

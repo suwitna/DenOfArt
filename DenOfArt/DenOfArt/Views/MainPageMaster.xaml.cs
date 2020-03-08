@@ -1,7 +1,11 @@
-﻿using System;
+﻿using DenOfArt.Tables;
+using Plugin.Media.Abstractions;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,6 +20,7 @@ namespace DenOfArt.Views
     public partial class MainPageMaster : ContentPage
     {
         public ListView ListView;
+        byte[] ImageBytes;
 
         public MainPageMaster()
         {
@@ -23,6 +28,44 @@ namespace DenOfArt.Views
 
             BindingContext = new MainPageMasterViewModel();
             ListView = MenuItemsListView;
+            LoadProfile();
+        }
+
+        private async void LoadProfile()
+        {
+            if (Application.Current.Properties.ContainsKey("USER_NAME"))
+            {
+                var username = Application.Current.Properties["USER_NAME"] as string;
+
+                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                var db = new SQLiteConnection(dbpath);
+                var myquery = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+
+                if (myquery != null)
+                {
+
+                }
+
+                var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+                if (profile != null)
+                {
+                    AccountName.Text = profile.FirstName + " " + profile.LastName;
+
+                    if (profile.Content != null)
+                    {
+                        ImageBytes = profile.Content;
+                        Stream sm = BytesToStream(ImageBytes);
+                        selectedImage.Source = ImageSource.FromStream(() => sm);
+                    }
+
+                }
+            }
+        }
+
+        public Stream BytesToStream(byte[] bytes)
+        {
+            Stream stream = new MemoryStream(bytes);
+            return stream;
         }
 
         class MainPageMasterViewModel : INotifyPropertyChanged

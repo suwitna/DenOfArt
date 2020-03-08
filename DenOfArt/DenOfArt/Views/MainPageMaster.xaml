@@ -24,26 +24,37 @@
       <ListView.Header>
         <Grid BackgroundColor="#03A9F4">
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
           </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
-            <RowDefinition Height="8"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="180"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="0"/>
           </Grid.RowDefinitions>
 
-          <Image Source="logo.png" Grid.Column="0" Grid.Row="1" VerticalOptions="CenterAndExpand"/>
-          <Label
+          <Frame  Grid.Row="1" Grid.Column="1"
+                CornerRadius="100" 
+                HeightRequest="130"
+                WidthRequest="130"
+                HorizontalOptions="Center"
+               VerticalOptions="Center"
+                Padding="0"
+                IsClippedToBounds="True">
+            <Image x:Name="selectedImage" Scale="1.8" HorizontalOptions="Center" VerticalOptions="Center"/>
+            
+        </Frame>
+        <Label x:Name="AccountName" Grid.Row="1" Grid.Column="1" FontSize="16" TextColor="White" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand"/>
+                    <!--Label
               Grid.Column="1"
               Grid.Row="1"
               Text="Deo Of Art"
               FontFamily="FontAwesome"
               TextColor="White"
               VerticalOptions="CenterAndExpand"
-              Style="{DynamicResource SubtitleStyle}"/>
+              Style="{DynamicResource SubtitleStyle}"/-->
         </Grid>
       </ListView.Header>
       <ListView.ItemTemplate>
