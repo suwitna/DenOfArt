@@ -18,6 +18,7 @@ namespace DenOfArt.Views
     public partial class ProfilePage : ContentPage
     {
         MediaFile file;
+        byte[] ImageBytes;
         public ProfilePage()
         {
             InitializeComponent();
@@ -36,38 +37,37 @@ namespace DenOfArt.Views
 
                 if (myquery != null)
                 {
-                    EntryUserName.Text = myquery.UserName;
-                    EntryUserPassword.Text = myquery.Password;
-                    EntryUserEmail.Text = myquery.Email;
-                    EntryUserPhoneNumber.Text = myquery.PhoneNumber;
+
                 }
             }
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private void Save_Clicked(object sender, EventArgs e)
         {
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
+                var username = Application.Current.Properties["USER_NAME"] as string;
                 var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
                 var db = new SQLiteConnection(dbpath);
-                var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(EntryUserName.Text) && u.Password.Equals(EntryUserPassword.Text)).FirstOrDefault();
+                var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
 
                 if (item != null)
                 {
-                    item.Email = EntryUserEmail.Text;
                     item.PhoneNumber = EntryUserPhoneNumber.Text;
-                    try { 
+                    try {
                         db.RunInTransaction(() =>
                         {
                             db.Update(item);
                         });
+
+                        SaveProfile(username, item.Email);
 
                         Device.BeginInvokeOnMainThread(async () =>
                         {
                             await this.DisplayAlert(null, "แก้ไขข้อมูลเรียบร้อยแล้ว", null, "ตกลง");
                         });
                     }
-                    catch(Exception sqlEx) 
+                    catch (Exception sqlEx)
                     {
                         System.Diagnostics.Debug.WriteLine(sqlEx);
                         Device.BeginInvokeOnMainThread(async () =>
@@ -119,7 +119,107 @@ namespace DenOfArt.Views
                 return;
             }
 
-            selectedImage.Source = ImageSource.FromStream(()=> selectedImageFile.GetStream());
+            selectedImage.Source = ImageSource.FromStream(() => selectedImageFile.GetStream());
+            GetImageBytes(selectedImageFile.GetStream());
+        }
+
+        private void Cancel_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Stepper_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            EntryAge.Text = e.NewValue.ToString();
+        }
+
+
+        public byte[] ReadFully(Stream input)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
+
+        private byte[] GetImageBytes(Stream stream)
+        {
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                ImageBytes = memoryStream.ToArray();
+            }
+            return ImageBytes;
+        }
+
+        public Stream BytesToStream(byte[] bytes)
+        {
+            Stream stream = new MemoryStream(bytes);
+            return stream;
+        }
+
+        private void SaveProfile(string username, string email)
+        {
+            var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+            var db = new SQLiteConnection(dbpath);
+            var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+
+            if (item == null)
+            {
+                db.CreateTable<ProfileTable>();
+
+                item = new ProfileTable()
+                {
+                    UserName = username,
+                    FirstName = EntryFirstName.Text,
+                    LastName = EntryLastName.Text,
+                    Gender = SelectGender.SelectedItem.ToString(),
+                    Age = EntryAge.Text,
+                    DateOfBirth = EntryAge.Text,
+                    Address1 = "",
+                    Address2 = "",
+                    Address3 = "",
+                    Email = email,
+                    PhoneNumber = EntryUserPhoneNumber.Text,
+                    Content = ImageBytes,
+
+                    CreateDate = DateTime.Now,
+                    UpdateDate = DateTime.Now,
+                };
+
+                db.Insert(item);
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", "ตกลง", null);
+
+                    if (result)
+                    {
+                        await Navigation.PushAsync(new LoginPage());
+                    }
+                });
+            }
+            else
+            {
+                item.FirstName = EntryFirstName.Text;
+                item.LastName = EntryLastName.Text;
+                item.Gender = SelectGender.SelectedItem.ToString();
+                item.Age = EntryAge.Text;
+                item.DateOfBirth = EntryAge.Text;
+                item.Address1 = "";
+                item.Address2 = "";
+                item.Address3 = "";
+                item.Email = email;
+                item.PhoneNumber = EntryUserPhoneNumber.Text;
+                item.Content = ImageBytes;
+
+                item.UpdateDate = DateTime.Now;
+
+                db.RunInTransaction(() =>
+                {
+                    db.Update(item);
+                });
+            }
         }
     }
 }
