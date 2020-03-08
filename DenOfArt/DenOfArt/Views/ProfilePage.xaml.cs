@@ -212,7 +212,7 @@ namespace DenOfArt.Views
                     LastName = EntryLastName.Text,
                     Gender = SelectGender.SelectedItem.ToString(),
                     Age = EntryAge.Text,
-                    DateOfBirth = SelectDateOfBirth.ToString(),
+                    DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy"),
                     Address1 = "",
                     Address2 = "",
                     Address3 = "",

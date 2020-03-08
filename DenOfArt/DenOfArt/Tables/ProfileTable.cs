@@ -4,7 +4,7 @@ namespace DenOfArt.Tables
 {
     public class ProfileTable
     {
-        [SQLite.PrimaryKey]
+        [SQLite.PrimaryKey, SQLite.AutoIncrement]
         public Guid ProfileId { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
