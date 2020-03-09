@@ -138,7 +138,7 @@ namespace DenOfArt.Views
 
             if (!CrossMedia.Current.IsPickPhotoSupported)
             {
-                await DisplayAlert(null, "ไม่รองรับการ\n(E102)", "ตกลง", null);
+                await DisplayAlert(null, "โปรแกรมไม่รองรับการ\n(E102)", "ตกลง", null);
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace DenOfArt.Views
 
             if (selectedImageFile == null)
             {
-                await DisplayAlert(null, "ไม่สามารถเปิดรูปได้\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E103)", null, "ตกลง");
+                //await DisplayAlert(null, "ไม่สามารถเปิดรูปได้\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E103)", null, "ตกลง");
                 return;
             }
 

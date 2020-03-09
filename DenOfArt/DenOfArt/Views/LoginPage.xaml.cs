@@ -31,6 +31,7 @@ namespace DenOfArt.Views
         {
             var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
             var db = new SQLiteConnection(dbpath);
+            db.CreateTable<RegUserTable>();
             var myquery = db.Table<RegUserTable>().Where(u => u.UserName.Equals(EntryUser.Text) && u.Password.Equals(EntryPassword.Text)).FirstOrDefault();
             
             if (myquery != null)
@@ -41,15 +42,25 @@ namespace DenOfArt.Views
             else
             {
                 Device.BeginInvokeOnMainThread(async () => {
-                    var result = await this.DisplayAlert("Error", "Failed User Name or Password", "Yes", "Cancel");
-
-                    if (result)
+                    if(EntryUser.Text == null)
                     {
-                        await Navigation.PushAsync(new LoginPage());
+                        await this.DisplayAlert(null, "กรุณาระบุชื่อผู้ใช้งาน", null, "ตกลง");
+                        EntryUser.Focus();
+                        return;
                     }
-                    else
+
+                    if (EntryPassword.Text == null)
                     {
-                        await Navigation.PushAsync(new LoginPage());
+                        await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                        EntryPassword.Focus();
+                        return;
+                    }
+
+                    var result = await this.DisplayAlert(null, "ข้อผิดพลาด! ไม่พบข้อมูลผู้ใช้งาน\nกรุณาตรวจสอบชื่อผู้ใช้งานและรหัสผ่าน", null, "ตกลง");
+
+                    if (!result)
+                    {
+                        EntryUser.Focus();
                     }
                 });
             }

@@ -35,13 +35,10 @@
                             IsClippedToBounds="True">
                         <Image x:Name="selectedImage" Scale="1.8" HorizontalOptions="Center" VerticalOptions="Center">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer
-                                Tapped="Button_Clicked_1"
-                                NumberOfTapsRequired="1" />
+                                <TapGestureRecognizer Tapped="Button_Clicked_1" />
                             </Image.GestureRecognizers>
                         </Image>
                     </Frame>
-                    <Button Clicked="Button_Clicked_1" Text="Click"/>
                     <Label Text="รูปโปรไฟล์" HorizontalOptions="CenterAndExpand"/>
                 </StackLayout>
                 <StackLayout Grid.Row="1" Grid.Column="0">

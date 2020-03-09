@@ -49,7 +49,15 @@ namespace DenOfArt.Views
                 var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
                 if (profile != null)
                 {
-                    AccountName.Text = profile.FirstName + " " + profile.LastName;
+                    string fullName = "";
+
+                    if (profile.FirstName != null)
+                        fullName = profile.FirstName;
+
+                    if (profile.LastName != null)
+                        fullName += " " + profile.LastName;
+
+                    AccountName.Text = fullName;
 
                     if (profile.Content != null)
                     {

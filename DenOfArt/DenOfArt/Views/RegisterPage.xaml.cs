@@ -36,10 +36,18 @@ namespace DenOfArt.Views
             };
 
             db.Insert(item);
-            Device.BeginInvokeOnMainThread(async () =>{
-                var result = await this.DisplayAlert("Congratuation", "User Registration Successfull", "Yes", "Cancel");
 
-                if (result)
+            var profile = new ProfileTable()
+            {
+                UserName = EntryUserName.Text,
+            };
+            db.CreateTable<ProfileTable>();
+            db.Insert(profile);
+
+            Device.BeginInvokeOnMainThread(async () =>{
+                var result = await this.DisplayAlert(null, "สมัครสมาชิกสำเร็จ!", null, "ตกลง");
+
+                if (!result)
                 {
                     await Navigation.PushAsync(new LoginPage());
                 }

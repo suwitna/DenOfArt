@@ -171,4 +171,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\logout_b.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\camera_b.png" />
+  </ItemGroup>
 </Project>
