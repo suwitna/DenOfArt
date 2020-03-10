@@ -33,11 +33,10 @@
                             HorizontalOptions="Center"
                             Padding="0"
                             IsClippedToBounds="True">
-                        <Image x:Name="selectedImage" Scale="1.8" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Button_Clicked_1" />
-                            </Image.GestureRecognizers>
-                        </Image>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Button_Clicked_1" />
+                        </Frame.GestureRecognizers>
+                        <Image x:Name="selectedImage" Scale="1.8" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Frame>
                     <Label Text="รูปโปรไฟล์" HorizontalOptions="CenterAndExpand"/>
                 </StackLayout>
