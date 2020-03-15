@@ -1,0 +1,5 @@
+<resources>
+  <string name="No_Appointments">ไม่พบข้อมูลการนัดหมาย</string>
+  <string name="NoSelectedDate">เลือกวันที่ต้องการดูข้อมูลการนัดหมาย</string>
+  <string name="No_Resources">ไม่พบข้อมูล</string>
+</resources>

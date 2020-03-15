@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:syncfusion="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
+             mc:Ignorable="d"
+             x:Class="DenOfArt.Views.SchedulePage">
+    <ContentPage.Content>
+        <StackLayout>
+            <syncfusion:SfSchedule 
+                HeaderHeight="75"
+                HeightRequest="500"
+                FirstDayOfWeek="2"
+                Locale="th"
+	            x:Name="schedule"
+	            ScheduleView="MonthView"
+	            ShowAppointmentsInline="False">
+                <syncfusion:SfSchedule.ViewHeaderStyle>
+                    <syncfusion:ViewHeaderStyle
+                        BackgroundColor="#666666"
+                        DayTextColor="White"
+                        DayFontFamily="Arial">
+                    </syncfusion:ViewHeaderStyle>
+                </syncfusion:SfSchedule.ViewHeaderStyle>
+                <syncfusion:SfSchedule.MonthViewSettings>
+                    <syncfusion:MonthViewSettings
+                        ShowAgendaView="true"
+                        TodayBackground="#ff66ff"
+                        SelectionTextColor="#00cc00">
+                        <syncfusion:MonthViewSettings.AgendaViewStyle>
+                            <syncfusion:AgendaViewStyle 
+                                DateFontColor="Black" 
+                                HeaderHeight="40" 
+                                DateFormat="dd MMMM, yyyy" 
+                                DateFontAttributes="None" 
+                                DateFontSize="15" 
+                                DateFontFamily="Arial" 
+                                TimeFontColor="White" 
+                                TimeFontSize="15" 
+                                TimeFontFamily="Arial" 
+                                TimeFormat="hh:mm a"
+                                TimeFontAttributes="Bold" 
+                                BackgroundColor="#C0C0C0" 
+                                SubjectFontColor="Black" 
+                                SubjectFontSize="13" 
+                                SubjectFontFamily="Arial" 
+                                SubjectFontAttributes="None" />
+                        </syncfusion:MonthViewSettings.AgendaViewStyle>
+
+                    </syncfusion:MonthViewSettings>
+                </syncfusion:SfSchedule.MonthViewSettings>
+            </syncfusion:SfSchedule>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -87,7 +87,7 @@ namespace DenOfArt.Views
                     new MainPageMasterMenuItem { Id = 0, Title = "หน้าหลัก", IconSource="home_b.png", TargetType = typeof(HomePage)},
                     new MainPageMasterMenuItem { Id = 1, Title = "โปรไฟล์", IconSource="account_b.png", TargetType = typeof(ProfilePage)},
                     new MainPageMasterMenuItem { Id = 2, Title = "ข้อมูลการรักษา", IconSource="list_b.png", TargetType = typeof(HomePage)},
-                    new MainPageMasterMenuItem { Id = 3, Title = "ข้อมูลการนัดหมาย", IconSource="date_b.png", TargetType = typeof(HomePage)},
+                    new MainPageMasterMenuItem { Id = 3, Title = "ข้อมูลการนัดหมาย", IconSource="date_b.png", TargetType = typeof(SchedulePage)},
                     new MainPageMasterMenuItem { Id = 4, Title = "ตั้งค่า", IconSource="setting_b.png", TargetType = typeof(HomePage)},
                     new MainPageMasterMenuItem { Id = 5, Title = "ออกจากระบบ", IconSource="logout_b.png"},
                 });

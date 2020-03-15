@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:local="clr-namespace:DenOfArt.ViewModels"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
+             mc:Ignorable="d"
+             x:Class="DenOfArt.Views.AppointmentPage">
+    <ContentPage.BindingContext>
+        <local:MonthViewPageViewModel/>
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Content>
+        <StackLayout>
+            <schedule:SfSchedule x:Name="shedule1" FirstDayOfWeek="2" ScheduleView="MonthView" Locale="th" DataSource="{Binding Meetings}" HeightRequest="450">
+                <schedule:SfSchedule.ViewHeaderStyle>
+                    <schedule:ViewHeaderStyle
+                        BackgroundColor="#cceeff"
+                        DayTextColor="#666699"
+                        DayFontFamily="Arial">
+                    </schedule:ViewHeaderStyle>
+                </schedule:SfSchedule.ViewHeaderStyle>
+                <schedule:SfSchedule.MonthViewSettings>
+                    <schedule:MonthViewSettings 
+                        ShowAgendaView="true"
+                        TodayBackground="#ff66ff"
+                        SelectionTextColor="#00cc00"/>
+                </schedule:SfSchedule.MonthViewSettings>
+
+                <schedule:SfSchedule.AppointmentMapping>
+                    <schedule:ScheduleAppointmentMapping
+                        EndTimeMapping="EndTime"
+                        StartTimeMapping="StartTime"
+                        SubjectMapping="Subject"/>
+                </schedule:SfSchedule.AppointmentMapping>
+            </schedule:SfSchedule>
+            <!--
+            <syncfusion:SfSchedule x:Name="schedule" DataSource="{Binding Meetings}" ShowAppointmentsInline="true" ScheduleView="MonthView" AllowAppointmentDrag="True">
+                <syncfusion:SfSchedule.AppointmentMapping>
+                    <syncfusion:ScheduleAppointmentMapping 
+                    EndTimeMapping="EndTime"
+                    StartTimeMapping="StartTime"
+                    SubjectMapping="Subject"/>
+                </syncfusion:SfSchedule.AppointmentMapping>
+            </syncfusion:SfSchedule>
+            -->
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
