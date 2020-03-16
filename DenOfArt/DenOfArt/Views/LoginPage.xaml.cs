@@ -17,7 +17,23 @@ namespace DenOfArt.Views
 
             Application.Current.Properties.Clear();
         }
-       
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () => {
+                var result = await DisplayAlert("ออกจากแอพพลิเคชั่น", "ท่านกำลังออกจากระบบ โปรดยืนยัน?", "ตกลง", "ยกเลิก");
+                if (result)
+                {
+                   // await this.Navigation.PopAsync(); // or anything else
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                    }
+                } 
+            });
+
+            return true;
+        }
+
         async void ForgotPassword_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new PasswordPage());

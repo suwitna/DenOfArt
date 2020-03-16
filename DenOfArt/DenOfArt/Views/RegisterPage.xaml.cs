@@ -23,6 +23,42 @@ namespace DenOfArt.Views
 
         private void Button_Clicked(object sender, EventArgs e)
         {
+            if (EntryUserName.Text == null)
+            {
+                //await this.DisplayAlert(null, "กรุณาระบุชื่อผู้ใช้งาน", null, "ตกลง");
+                EntryUserName.PlaceholderColor = Color.FromHex("#ffb3ba");
+                EntryUserName.Placeholder = "กรุณาระบุชื่อผู้ใช้งาน";
+                EntryUserName.Focus();
+                return;
+            }
+
+            if (EntryUserPassword.Text == null)
+            {
+                //await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                EntryUserPassword.PlaceholderColor = Color.FromHex("#ffb3ba");
+                EntryUserPassword.Placeholder = "กรุณาระบุรหัสผ่าน";
+                EntryUserPassword.Focus();
+                return;
+            }
+
+            if (EntryUserEmail.Text == null)
+            {
+                //await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                EntryUserEmail.PlaceholderColor = Color.FromHex("#ffb3ba");
+                EntryUserEmail.Placeholder = "กรุณาระบุอีเมล์";
+                EntryUserEmail.Focus();
+                return;
+            }
+
+            if (EntryUserPhoneNumber.Text == null)
+            {
+                //await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                EntryUserPhoneNumber.PlaceholderColor = Color.FromHex("#ffb3ba");
+                EntryUserPhoneNumber.Placeholder = "กรุณาระบุเบอร์โทรศัพท์";
+                EntryUserPhoneNumber.Focus();
+                return;
+            }
+
             var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
             var db = new SQLiteConnection(dbpath);
             db.CreateTable<RegUserTable>();
