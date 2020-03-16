@@ -18,7 +18,7 @@
 	            ShowAppointmentsInline="False">
                 <syncfusion:SfSchedule.ViewHeaderStyle>
                     <syncfusion:ViewHeaderStyle
-                        BackgroundColor="#666666"
+                        BackgroundColor="#3DBCFF"
                         DayTextColor="White"
                         DayFontFamily="Arial">
                     </syncfusion:ViewHeaderStyle>
@@ -41,7 +41,7 @@
                                 TimeFontFamily="Arial" 
                                 TimeFormat="hh:mm a"
                                 TimeFontAttributes="Bold" 
-                                BackgroundColor="#C0C0C0" 
+                                BackgroundColor="#E1F7D5" 
                                 SubjectFontColor="Black" 
                                 SubjectFontSize="13" 
                                 SubjectFontFamily="Arial" 

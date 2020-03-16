@@ -8,26 +8,52 @@
     <ContentPage.Content>
         <StackLayout BackgroundColor="White">
             <Grid BackgroundColor="White"  Margin="20,0,20,0" VerticalOptions="StartAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="250"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
+                    <RowDefinition Height="25"/>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="100"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
-                <Image Source="logo.png" Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
+                <Image Source="logo.png" Grid.Row="0" Grid.ColumnSpan="3" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
                <!-- <Label Text="Dent of Art" FontSize="36" FontAttributes="Bold" Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" /> -->
-                <Entry Placeholder="Username" FontSize="16" x:Name="EntryUser" Grid.Row="1"/>
-                <Entry Placeholder="Password" IsPassword="true" FontSize="16" x:Name="EntryPassword" Grid.Row="2"/>
-                <Button Text="Login" Grid.Row="3" BackgroundColor="#0077be" TextColor="White" Clicked="Login_Clicked"/>
-                <Button Text="Sign Up" Grid.Row="4" Clicked="Signup_Clicked"/>
-                <StackLayout Grid.Row="5">
-                    <Label Text="Forgot Password?" TextColor="Blue" TextDecorations="Underline"
+                <Entry Placeholder="ชื่อผู้ใช้งาน" FontSize="16" x:Name="EntryUser" Grid.Row="1" Grid.ColumnSpan="3"/>
+                <Entry Placeholder="รหัสผ่าน" IsPassword="true" FontSize="16" x:Name="EntryPassword" Grid.Row="2" Grid.ColumnSpan="3"/>
+                <StackLayout Grid.Row="3" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand" HorizontalOptions="EndAndExpand">
+                    <Label Text="ลืมรหัสผ่าน?" TextColor="#0077be"
                         VerticalOptions="CenterAndExpand" 
                         HorizontalOptions="CenterAndExpand" >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="ForgotPassword_Clicked"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+                <Button Text="เข้าสู่ระบบ" FontSize="Medium" Grid.Row="4" Grid.ColumnSpan="3" BackgroundColor="#0077be" TextColor="White" CornerRadius="10" Clicked="Login_Clicked"/>
+
+                <StackLayout Grid.Row="5" Grid.Column="0" VerticalOptions="CenterAndExpand">
+                    <Label HeightRequest="1" BackgroundColor="Gray"></Label>
+                </StackLayout>
+                <StackLayout Grid.Row="5" Grid.Column="1" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                    <Label Text="หรือ"></Label>
+                </StackLayout>
+                <StackLayout Grid.Row="5" Grid.Column="2" VerticalOptions="CenterAndExpand">
+                    <Label HeightRequest="1" BackgroundColor="Gray"></Label>
+                </StackLayout>
+                <StackLayout Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" VerticalOptions="CenterAndExpand" HorizontalOptions="EndAndExpand">
+                    <Label Text="ยังไม่มีบัญชีผู้ใช้งาน?" TextColor="Gray">
+                    </Label>
+                </StackLayout>
+                <StackLayout Grid.Row="6" Grid.Column="2" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand">
+                    <Label Text="สมัครใช้งาน" TextColor="#0077be">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Signup_Clicked"/>
                         </Label.GestureRecognizers>
                     </Label>
                 </StackLayout>

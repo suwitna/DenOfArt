@@ -6,7 +6,22 @@
              mc:Ignorable="d"
              x:Class="DenOfArt.Views.MainPageDetail"
              Title="หน้าหลัก">
-  <StackLayout Padding="10">
-    <Label Text="This is a detail page. To get the 'triple' line icon on each platform add a icon to each platform and update the 'Master' page with an Icon that references it."/>
-  </StackLayout>
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="White">
+            <Grid BackgroundColor="White"  Margin="20,20,20,0" VerticalOptions="StartAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Button Text="หน้าหลัก" Grid.Row="0" BackgroundColor="#0077be" TextColor="White"/>
+                <Button Text="โปรไฟล์" Grid.Row="1" BackgroundColor="#0077be" TextColor="White" Clicked="Profile_Clicked"/>
+                <Button Text="ข้อมูลการรักษา" Grid.Row="2" BackgroundColor="#0077be" TextColor="White" Clicked="History_Clicked"/>
+                <Button Text="ข้อมูลการนัดหมาย" Grid.Row="3" BackgroundColor="#0077be" TextColor="White" Clicked="Schedule_Clicked"/>
+                <Button Text="ตั้งค่า" Grid.Row="4" BackgroundColor="#0077be" TextColor="White" Clicked="Setting_Clicked"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

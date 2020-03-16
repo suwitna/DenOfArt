@@ -22,10 +22,11 @@ namespace DenOfArt.Views
         public ProfilePage()
         {
             InitializeComponent();
+            SetEditMode(false);
             LoadProfile();
         }
 
-        private async void LoadProfile()
+        private void LoadProfile()
         {
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
@@ -57,12 +58,6 @@ namespace DenOfArt.Views
                     {
                         SelectGender.SelectedItem = profile.Gender;
                     }
-                    
-                    if(profile.Age != null)
-                    { 
-                        EntryAge.Text = profile.Age;
-                        StepperAge.Value = Convert.ToInt32(profile.Age);
-                    }
 
                     if (profile.DateOfBirth != null)
                     {
@@ -75,60 +70,6 @@ namespace DenOfArt.Views
                         EntryUserPhoneNumber.Text = profile.PhoneNumber;
                     }
                 }
-            }
-        }
-
-        private void Save_Clicked(object sender, EventArgs e)
-        {
-            if (Application.Current.Properties.ContainsKey("USER_NAME"))
-            {
-                var username = Application.Current.Properties["USER_NAME"] as string;
-                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
-                var db = new SQLiteConnection(dbpath);
-                var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-
-                if (item != null)
-                {
-                    item.PhoneNumber = EntryUserPhoneNumber.Text;
-                    try {
-                        db.RunInTransaction(() =>
-                        {
-                            db.Update(item);
-                        });
-
-                        SaveProfile(username, item.Email);
-
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await this.DisplayAlert(null, "แก้ไขข้อมูลเรียบร้อยแล้ว", null, "ตกลง");
-                        });
-                    }
-                    catch (Exception sqlEx)
-                    {
-                        System.Diagnostics.Debug.WriteLine(sqlEx);
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E100)", null, "ตกลง");
-                        });
-                    }
-                }
-                else
-                {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E101)", null, "ตกลง");
-                        await Navigation.PushAsync(new MainPage());
-                    });
-                }
-            }
-            else
-            {
-                Application.Current.Properties.Clear();
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E01)", null, "ตกลง");
-                    await Navigation.PushAsync(new LoginPage());
-                });
             }
         }
 
@@ -159,17 +100,6 @@ namespace DenOfArt.Views
             GetImageBytes(selectedImageFile.GetStream());
         }
 
-        private void Cancel_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Stepper_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            EntryAge.Text = e.NewValue.ToString();
-        }
-
-
         public byte[] ReadFully(Stream input)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -195,7 +125,7 @@ namespace DenOfArt.Views
             return stream;
         }
 
-        private async void SaveProfile(string username, string email)
+        private void SaveProfile(string username, string email)
         {
             var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
             var db = new SQLiteConnection(dbpath);
@@ -211,7 +141,6 @@ namespace DenOfArt.Views
                     FirstName = EntryFirstName.Text,
                     LastName = EntryLastName.Text,
                     Gender = SelectGender.SelectedItem.ToString(),
-                    Age = EntryAge.Text,
                     DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy"),
                     Address1 = "",
                     Address2 = "",
@@ -235,7 +164,6 @@ namespace DenOfArt.Views
                 item.FirstName = EntryFirstName.Text;
                 item.LastName = EntryLastName.Text;
                 item.Gender = SelectGender.SelectedItem.ToString();
-                item.Age = EntryAge.Text;
                 item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
                 item.Address1 = "";
                 item.Address2 = "";
@@ -251,6 +179,126 @@ namespace DenOfArt.Views
                     db.Update(item);
                 });
             }
+        }
+
+        private void ToolbarEdit_Clicked(object sender, EventArgs e)
+        {
+            AddSaveCancelNavItem();
+        }
+
+        private void SetEditMode(bool mode)
+        {
+            FrameImage.IsEnabled = mode;
+            EntryFirstName.IsEnabled = mode;
+            EntryLastName.IsEnabled = mode;
+            SelectGender.IsEnabled = mode;
+            SelectDateOfBirth.IsEnabled = mode;
+            EntryUserPhoneNumber.IsEnabled = mode;
+        }
+
+        private void AddSaveCancelNavItem()
+        {
+            SetEditMode(true);
+            ToolbarItems.Remove(ToolbarItems.First<ToolbarItem>());
+            ToolbarItems.Add(new ToolbarItem("บันทึก", null, async () =>
+            {
+                var result =  await DisplayAlert(null, "ต้องกการบันทึกการแก้ไข้ข้อมูล?", "บันทึก", "ยกเลิก");
+                if(result)
+                { 
+                    SaveProfile();
+                }
+                else
+                {
+                    return;
+                }
+            }));
+            ToolbarItems.Add(new ToolbarItem("ยกเลิก", null, async () =>
+            {
+                var result = await DisplayAlert(null, "ยกเลิกการแก้ไข้ข้อมูล?", "ใช่", "ไม่");
+                if (result)
+                {
+                    CancelProfile();
+                }
+                else
+                {
+                    return;
+                }
+            }));
+        }
+
+        private void SaveProfile()
+        {
+            if (Application.Current.Properties.ContainsKey("USER_NAME"))
+            {
+                var username = Application.Current.Properties["USER_NAME"] as string;
+                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                var db = new SQLiteConnection(dbpath);
+                var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+
+                if (item != null)
+                {
+                    item.PhoneNumber = EntryUserPhoneNumber.Text;
+                    try
+                    {
+                        db.RunInTransaction(() =>
+                        {
+                            db.Update(item);
+                        });
+
+                        SaveProfile(username, item.Email);
+
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            await this.DisplayAlert(null, "บันทึกข้อมูลเรียบร้อยแล้ว", null, "ตกลง");
+                        });
+                    }
+                    catch (Exception sqlEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine(sqlEx);
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E100)", null, "ตกลง");
+                        });
+                    }
+                }
+                else
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E101)", null, "ตกลง");
+                        await Navigation.PushAsync(new MainPage());
+                    });
+                }
+            }
+            else
+            {
+                Application.Current.Properties.Clear();
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E01)", null, "ตกลง");
+                    await Navigation.PushAsync(new LoginPage());
+                });
+            }
+
+            AddEditNavItem();
+            return;
+        }
+
+        private void CancelProfile()
+        {
+            AddEditNavItem();
+            return;
+        }
+
+        private void AddEditNavItem()
+        {
+            LoadProfile();
+            SetEditMode(false);
+            ToolbarItems.Clear();
+            ToolbarItems.Add(new ToolbarItem("แก้ไข", null, async () =>
+            {
+                AddSaveCancelNavItem();
+            }));
         }
     }
 }

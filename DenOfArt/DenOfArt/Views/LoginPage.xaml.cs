@@ -44,14 +44,18 @@ namespace DenOfArt.Views
                 Device.BeginInvokeOnMainThread(async () => {
                     if(EntryUser.Text == null)
                     {
-                        await this.DisplayAlert(null, "กรุณาระบุชื่อผู้ใช้งาน", null, "ตกลง");
+                        //await this.DisplayAlert(null, "กรุณาระบุชื่อผู้ใช้งาน", null, "ตกลง");
+                        EntryUser.PlaceholderColor = Color.FromHex("#ffb3ba");
+                        EntryUser.Placeholder = "กรุณาระบุชื่อผู้ใช้งาน";
                         EntryUser.Focus();
                         return;
                     }
 
                     if (EntryPassword.Text == null)
                     {
-                        await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                        //await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                        EntryPassword.PlaceholderColor = Color.FromHex("#ffb3ba");
+                        EntryPassword.Placeholder = "กรุณาระบุรหัสผ่าน";
                         EntryPassword.Focus();
                         return;
                     }

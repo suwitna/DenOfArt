@@ -16,5 +16,26 @@ namespace DenOfArt.Views
         {
             InitializeComponent();
         }
+
+        async void Profile_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ProfilePage());
+        }
+
+        async void History_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ProfilePage());
+        }
+
+        async void Schedule_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SchedulePage());
+        }
+
+
+        async void Setting_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ProfilePage());
+        }
     }
 }

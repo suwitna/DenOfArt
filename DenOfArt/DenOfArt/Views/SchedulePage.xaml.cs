@@ -26,7 +26,7 @@ namespace DenOfArt.Views
             DateTime endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day+3, 11, 0, 0);
             clientMeeting.StartTime = startTime;
             clientMeeting.EndTime = endTime;
-            clientMeeting.Color = Color.FromHex("#e1917f");
+            clientMeeting.Color = Color.FromHex("#C9C9FF");
             clientMeeting.Subject = "ขูดหินปูน";
             appointmentCollection.Add(clientMeeting);
 
@@ -36,7 +36,7 @@ namespace DenOfArt.Views
             endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 3, 14, 0, 0);
             clientMeeting.StartTime = startTime;
             clientMeeting.EndTime = endTime;
-            clientMeeting.Color = Color.FromHex("#20B2AA");
+            clientMeeting.Color = Color.FromHex("#C9C9FF");
             clientMeeting.Subject = "รักษารากฟันครั้งที่ 1";
             appointmentCollection.Add(clientMeeting);
 
@@ -46,7 +46,7 @@ namespace DenOfArt.Views
             endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 10, 10, 0, 0);
             clientMeeting.StartTime = startTime;
             clientMeeting.EndTime = endTime;
-            clientMeeting.Color = Color.FromHex("#20B2AA");
+            clientMeeting.Color = Color.FromHex("#C9C9FF");
             clientMeeting.Subject = "รักษารากฟันครั้งที่ 2";
             appointmentCollection.Add(clientMeeting);
             schedule.DataSource = appointmentCollection;
