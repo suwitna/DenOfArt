@@ -18,62 +18,193 @@ namespace DenOfArt.Views
     public partial class ProfilePage : ContentPage
     {
         MediaFile file;
-        byte[] ImageBytes;
+        byte[] tmpImageBytes;
+        byte[] tmpImageBytesNew;
+        string tmpFirstName;
+        string tmpLastName;
+        string tmpGender;
+        DateTime tmpDateofBirth;
+        string tmpPhone;
+        string tmpEmail;
+        string tmpAddr1;
+        string tmpAddr2;
+        string tmpAddr3;
+        bool isCancelMode = false;
+
         public ProfilePage()
         {
             InitializeComponent();
             SetEditMode(false);
+            popupLoadingView.IsVisible = true;
+            activityIndicator.IsRunning = true;
             LoadProfile();
+            Device.StartTimer(TimeSpan.FromSeconds(0.50), () => {
+                popupLoadingView.IsVisible = false;
+                activityIndicator.IsRunning = false;
+                return true;
+            });
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () => {
+                var result = await DisplayAlert("ออกจากแอพพลิเคชั่น", "ท่านกำลังออกจากระบบ โปรดยืนยัน?", "ตกลง", "ยกเลิก");
+                if (result)
+                {
+                    // await this.Navigation.PopAsync(); // or anything else
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                    }
+                }
+            });
+
+            return true;
+        }
         private void LoadProfile()
         {
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
-                var username = Application.Current.Properties["USER_NAME"] as string;
-
-                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
-                var db = new SQLiteConnection(dbpath);
-                var myquery = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-
-                if (myquery != null)
+                if (isCancelMode)
                 {
+                    EntryFirstName.Text = tmpFirstName;
+                    EntryLastName.Text = tmpLastName;
 
-                }
-
-                var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-                if (profile != null)
-                {
-                    EntryFirstName.Text = profile.FirstName;
-                    EntryLastName.Text = profile.LastName;
-
-                    if (profile.Content != null)
+                    if (tmpImageBytesNew != null)
                     {
-                        ImageBytes = profile.Content;
-                        Stream sm = BytesToStream(ImageBytes);
+                        Stream sm = BytesToStream(tmpImageBytes);
                         selectedImage.Source = ImageSource.FromStream(() => sm);
                     }
-                    
-                    if(profile.Gender != null)
+
+                    if (tmpGender != null)
                     {
-                        SelectGender.SelectedItem = profile.Gender;
+                        SelectGender.SelectedItem = tmpGender;
                     }
 
-                    if (profile.DateOfBirth != null)
+                    if (tmpDateofBirth != null)
                     {
-                        DateTime date = DateTime.ParseExact(profile.DateOfBirth, "dd/MM/yyyy", null);
-                        SelectDateOfBirth.Date = date;
+                        SelectDateOfBirth.Date = tmpDateofBirth;
                     }
 
-                    if(profile.PhoneNumber != null)
+                    if (tmpPhone != null)
                     {
-                        EntryUserPhoneNumber.Text = profile.PhoneNumber;
+                        EntryUserPhoneNumber.Text = tmpPhone;
+                    }
+
+                    if (tmpEmail != null)
+                    {
+                        EntryEmail.Text = tmpEmail;
+                    }
+
+                    if (tmpAddr1 != null)
+                    {
+                        EntryAddress1.Text = tmpAddr1;
+                    }
+
+                    if (tmpAddr2 != null)
+                    {
+                        EntryAddress2.Text = tmpAddr2;
+                    }
+
+                    if (tmpAddr3 != null)
+                    {
+                        EntryAddress3.Text = tmpAddr3;
+                    }
+                    tmpImageBytesNew = null;
+                    isCancelMode = false;
+                }
+                else
+                {
+                    var username = Application.Current.Properties["USER_NAME"] as string;
+
+                    var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                    var db = new SQLiteConnection(dbpath);
+                    var myquery = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+
+                    if (myquery != null)
+                    {
+
+                    }
+
+                    var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+                    if (myquery != null && profile != null)
+                    {
+                        EntryFirstName.Text = profile.FirstName;
+                        EntryLastName.Text = profile.LastName;
+                        tmpFirstName = profile.FirstName;
+                        tmpLastName = profile.LastName;
+
+                        if (profile.Content != null)
+                        {
+                            if (tmpImageBytes == null)
+                            {
+                                tmpImageBytes = profile.Content;
+                                Stream sm = BytesToStream(tmpImageBytes);
+                                selectedImage.Source = ImageSource.FromStream(() => sm);
+                            }
+                            else
+                            {
+
+                                var imageCompare = tmpImageBytes.SequenceEqual(profile.Content);
+                                if (!imageCompare)
+                                {
+                                    tmpImageBytes = profile.Content;
+                                    Stream sm = BytesToStream(tmpImageBytes);
+                                    selectedImage.Source = ImageSource.FromStream(() => sm);
+                                }
+                            }
+
+
+                        }
+
+                        if (profile.Gender != null)
+                        {
+                            SelectGender.SelectedItem = profile.Gender;
+                            tmpGender = profile.Gender;
+                        }
+
+                        if (profile.DateOfBirth != null)
+                        {
+                            DateTime date = DateTime.ParseExact(profile.DateOfBirth, "dd/MM/yyyy", null);
+                            SelectDateOfBirth.Date = date;
+                            tmpDateofBirth = date;
+                        }
+
+                        if (profile.PhoneNumber != null)
+                        {
+                            EntryUserPhoneNumber.Text = profile.PhoneNumber;
+                            tmpPhone = profile.PhoneNumber;
+                        }
+
+                        if (profile.Email != null)
+                        {
+                            EntryEmail.Text = profile.Email;
+                            tmpEmail = profile.Email;
+                        }
+
+                        if (profile.Address1 != null)
+                        {
+                            EntryAddress1.Text = profile.Address1;
+                            tmpAddr1 = profile.Address1;
+                        }
+
+                        if (profile.Address2 != null)
+                        {
+                            EntryAddress2.Text = profile.Address2;
+                            tmpAddr2 = profile.Address2;
+                        }
+
+                        if (profile.Address3 != null)
+                        {
+                            EntryAddress3.Text = profile.Address3;
+                            tmpAddr3 = profile.Address3;
+                        }
                     }
                 }
             }
         }
 
-        private async void Button_Clicked_1(object sender, EventArgs e)
+        private async void SelectImage_Clicked(object sender, EventArgs e)
         {
             await CrossMedia.Current.Initialize();
 
@@ -114,9 +245,9 @@ namespace DenOfArt.Views
             using (var memoryStream = new System.IO.MemoryStream())
             {
                 stream.CopyTo(memoryStream);
-                ImageBytes = memoryStream.ToArray();
+                tmpImageBytesNew = memoryStream.ToArray();
             }
-            return ImageBytes;
+            return tmpImageBytesNew;
         }
 
         public Stream BytesToStream(byte[] bytes)
@@ -142,12 +273,12 @@ namespace DenOfArt.Views
                     LastName = EntryLastName.Text,
                     Gender = SelectGender.SelectedItem.ToString(),
                     DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy"),
-                    Address1 = "",
-                    Address2 = "",
-                    Address3 = "",
+                    Address1 = EntryAddress1.Text,
+                    Address2 = EntryAddress2.Text,
+                    Address3 = EntryAddress3.Text,
                     Email = email,
                     PhoneNumber = EntryUserPhoneNumber.Text,
-                    Content = ImageBytes,
+                    Content = tmpImageBytesNew,
 
                     CreateDate = DateTime.Now,
                     UpdateDate = DateTime.Now,
@@ -158,6 +289,7 @@ namespace DenOfArt.Views
                 {
                     var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", null, "ตกลง");
                 });
+                return;
             }
             else
             {
@@ -165,25 +297,37 @@ namespace DenOfArt.Views
                 item.LastName = EntryLastName.Text;
                 item.Gender = SelectGender.SelectedItem.ToString();
                 item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
-                item.Address1 = "";
-                item.Address2 = "";
-                item.Address3 = "";
+                item.Address1 = EntryAddress1.Text;
+                item.Address2 = EntryAddress2.Text;
+                item.Address3 = EntryAddress3.Text;
                 item.Email = email;
                 item.PhoneNumber = EntryUserPhoneNumber.Text;
-                item.Content = ImageBytes;
 
+                if(tmpImageBytesNew != null)
+                {
+                    item.Content = tmpImageBytesNew;
+                }
+               
                 item.UpdateDate = DateTime.Now;
 
                 db.RunInTransaction(() =>
                 {
                     db.Update(item);
                 });
+
+                //Refresh Profile Image
+                var md = (MasterDetailPage)Application.Current.MainPage;
+                var menu = (MainPageMaster)md.Master;
+                menu.LoadProfile();
+
+                return;
             }
         }
 
         private void ToolbarEdit_Clicked(object sender, EventArgs e)
         {
             AddSaveCancelNavItem();
+            return;
         }
 
         private void SetEditMode(bool mode)
@@ -194,36 +338,11 @@ namespace DenOfArt.Views
             SelectGender.IsEnabled = mode;
             SelectDateOfBirth.IsEnabled = mode;
             EntryUserPhoneNumber.IsEnabled = mode;
-        }
-
-        private void AddSaveCancelNavItem()
-        {
-            SetEditMode(true);
-            ToolbarItems.Remove(ToolbarItems.First<ToolbarItem>());
-            ToolbarItems.Add(new ToolbarItem("บันทึก", null, async () =>
-            {
-                var result =  await DisplayAlert(null, "ต้องกการบันทึกการแก้ไข้ข้อมูล?", "บันทึก", "ยกเลิก");
-                if(result)
-                { 
-                    SaveProfile();
-                }
-                else
-                {
-                    return;
-                }
-            }));
-            ToolbarItems.Add(new ToolbarItem("ยกเลิก", null, async () =>
-            {
-                var result = await DisplayAlert(null, "ยกเลิกการแก้ไข้ข้อมูล?", "ใช่", "ไม่");
-                if (result)
-                {
-                    CancelProfile();
-                }
-                else
-                {
-                    return;
-                }
-            }));
+            EntryEmail.IsEnabled = false;
+            EntryAddress1.IsEnabled = mode;
+            EntryAddress2.IsEnabled = mode;
+            EntryAddress3.IsEnabled = mode;
+            return;
         }
 
         private void SaveProfile()
@@ -249,7 +368,11 @@ namespace DenOfArt.Views
 
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            await this.DisplayAlert(null, "บันทึกข้อมูลเรียบร้อยแล้ว", null, "ตกลง");
+                            popupSavingView.IsVisible = true;
+                            Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+                                popupSavingView.IsVisible = false;
+                                return true;
+                            });
                         });
                     }
                     catch (Exception sqlEx)
@@ -279,26 +402,55 @@ namespace DenOfArt.Views
                     await Navigation.PushAsync(new LoginPage());
                 });
             }
-
             AddEditNavItem();
+            SetEditMode(false);
             return;
         }
 
         private void CancelProfile()
         {
+            isCancelMode = true;
             AddEditNavItem();
+            SetEditMode(false);
             return;
         }
 
         private void AddEditNavItem()
         {
             LoadProfile();
-            SetEditMode(false);
             ToolbarItems.Clear();
             ToolbarItems.Add(new ToolbarItem("แก้ไข", null, async () =>
             {
                 AddSaveCancelNavItem();
             }));
+
+            return;
+        }
+
+        private void AddSaveCancelNavItem()
+        {
+            SetEditMode(true);
+            ToolbarItems.Remove(ToolbarItems.First<ToolbarItem>());
+            ToolbarItems.Add(new ToolbarItem("บันทึก", null, async () =>
+            {
+                var result =  await DisplayAlert(null, "ต้องกการบันทึกการแก้ไข้ข้อมูล?", "บันทึก", "ยกเลิก");
+                if(result)
+                { 
+                    SaveProfile();
+                    return;
+                }
+                else
+                {
+                    return;
+                }
+            }));
+            ToolbarItems.Add(new ToolbarItem("ยกเลิก", null, async () =>
+            {
+                CancelProfile();
+                return;
+            }));
+
+            return;
         }
     }
 }

@@ -7,8 +7,9 @@
              mc:Ignorable="d"
              x:Class="DenOfArt.Views.SchedulePage">
     <ContentPage.Content>
-        <StackLayout>
-            <syncfusion:SfSchedule 
+        <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout>
+                <syncfusion:SfSchedule 
                 HeaderHeight="75"
                 HeightRequest="500"
                 FirstDayOfWeek="2"
@@ -16,20 +17,20 @@
 	            x:Name="schedule"
 	            ScheduleView="MonthView"
 	            ShowAppointmentsInline="False">
-                <syncfusion:SfSchedule.ViewHeaderStyle>
-                    <syncfusion:ViewHeaderStyle
+                    <syncfusion:SfSchedule.ViewHeaderStyle>
+                        <syncfusion:ViewHeaderStyle
                         BackgroundColor="#3DBCFF"
                         DayTextColor="White"
                         DayFontFamily="Arial">
-                    </syncfusion:ViewHeaderStyle>
-                </syncfusion:SfSchedule.ViewHeaderStyle>
-                <syncfusion:SfSchedule.MonthViewSettings>
-                    <syncfusion:MonthViewSettings
+                        </syncfusion:ViewHeaderStyle>
+                    </syncfusion:SfSchedule.ViewHeaderStyle>
+                    <syncfusion:SfSchedule.MonthViewSettings>
+                        <syncfusion:MonthViewSettings
                         ShowAgendaView="true"
                         TodayBackground="#ff66ff"
                         SelectionTextColor="#00cc00">
-                        <syncfusion:MonthViewSettings.AgendaViewStyle>
-                            <syncfusion:AgendaViewStyle 
+                            <syncfusion:MonthViewSettings.AgendaViewStyle>
+                                <syncfusion:AgendaViewStyle 
                                 DateFontColor="Black" 
                                 HeaderHeight="40" 
                                 DateFormat="dd MMMM, yyyy" 
@@ -46,11 +47,22 @@
                                 SubjectFontSize="13" 
                                 SubjectFontFamily="Arial" 
                                 SubjectFontAttributes="None" />
-                        </syncfusion:MonthViewSettings.AgendaViewStyle>
+                            </syncfusion:MonthViewSettings.AgendaViewStyle>
 
-                    </syncfusion:MonthViewSettings>
-                </syncfusion:SfSchedule.MonthViewSettings>
-            </syncfusion:SfSchedule>
-        </StackLayout>
+                        </syncfusion:MonthViewSettings>
+                    </syncfusion:SfSchedule.MonthViewSettings>
+                </syncfusion:SfSchedule>
+            </StackLayout>
+            <!--Loading Popup-->
+            <ContentView x:Name="popupLoadingView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200">
+
+                        <ActivityIndicator x:Name="activityIndicator" Margin="0,50,0,0" VerticalOptions="Center" HorizontalOptions="Center" Color="Black" WidthRequest="30" HeightRequest="30" ></ActivityIndicator>
+                        <Label x:Name="lblLoadingText" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center" VerticalTextAlignment="Center" Text="Loading..."></Label>
+                    </StackLayout>
+                </StackLayout>
+            </ContentView>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

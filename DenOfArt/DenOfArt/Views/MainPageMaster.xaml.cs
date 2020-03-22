@@ -1,4 +1,5 @@
-﻿using DenOfArt.Tables;
+﻿using DenOfArt.MenuItems;
+using DenOfArt.Tables;
 using Plugin.Media.Abstractions;
 using SQLite;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using static Android.Preferences.PreferenceActivity;
 
 namespace DenOfArt.Views
 {
@@ -31,7 +33,7 @@ namespace DenOfArt.Views
             LoadProfile();
         }
 
-        private async void LoadProfile()
+        public async void LoadProfile()
         {
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
@@ -75,7 +77,7 @@ namespace DenOfArt.Views
             Stream stream = new MemoryStream(bytes);
             return stream;
         }
-
+        
         class MainPageMasterViewModel : INotifyPropertyChanged
         {
             public ObservableCollection<MainPageMasterMenuItem> MenuItems { get; set; }

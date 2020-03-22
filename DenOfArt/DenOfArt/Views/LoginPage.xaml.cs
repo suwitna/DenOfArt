@@ -14,7 +14,6 @@ namespace DenOfArt.Views
         {
             NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
-
             Application.Current.Properties.Clear();
         }
         protected override bool OnBackButtonPressed()
@@ -23,7 +22,7 @@ namespace DenOfArt.Views
                 var result = await DisplayAlert("ออกจากแอพพลิเคชั่น", "ท่านกำลังออกจากระบบ โปรดยืนยัน?", "ตกลง", "ยกเลิก");
                 if (result)
                 {
-                   // await this.Navigation.PopAsync(); // or anything else
+                    // await this.Navigation.PopAsync(); // or anything else
                     if (Device.RuntimePlatform == Device.Android)
                     {
                         Android.OS.Process.KillProcess(Android.OS.Process.MyPid());

@@ -7,21 +7,36 @@
              x:Class="DenOfArt.Views.MainPageDetail"
              Title="หน้าหลัก">
     <ContentPage.Content>
-        <StackLayout BackgroundColor="White">
-            <Grid BackgroundColor="White"  Margin="20,20,20,0" VerticalOptions="StartAndExpand">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                <Button Text="หน้าหลัก" Grid.Row="0" BackgroundColor="#0077be" TextColor="White"/>
-                <Button Text="โปรไฟล์" Grid.Row="1" BackgroundColor="#0077be" TextColor="White" Clicked="Profile_Clicked"/>
-                <Button Text="ข้อมูลการรักษา" Grid.Row="2" BackgroundColor="#0077be" TextColor="White" Clicked="History_Clicked"/>
-                <Button Text="ข้อมูลการนัดหมาย" Grid.Row="3" BackgroundColor="#0077be" TextColor="White" Clicked="Schedule_Clicked"/>
-                <Button Text="ตั้งค่า" Grid.Row="4" BackgroundColor="#0077be" TextColor="White" Clicked="Setting_Clicked"/>
-            </Grid>
-        </StackLayout>
+        <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout BackgroundColor="White" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <StackLayout BackgroundColor="White" >
+                    <Grid BackgroundColor="White"  Margin="20,20,20,0" VerticalOptions="StartAndExpand">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <Button Text="หน้าหลัก" Grid.Row="0" BackgroundColor="#0077be" TextColor="White"/>
+                        <Button Text="โปรไฟล์" Grid.Row="1" BackgroundColor="#0077be" TextColor="White" Clicked="Profile_Clicked"/>
+                        <Button Text="ข้อมูลการรักษา" Grid.Row="2" BackgroundColor="#0077be" TextColor="White" Clicked="History_Clicked"/>
+                        <Button Text="ข้อมูลการนัดหมาย" Grid.Row="3" BackgroundColor="#0077be" TextColor="White" Clicked="Schedule_Clicked"/>
+                        <Button Text="ตั้งค่า" Grid.Row="4" BackgroundColor="#0077be" TextColor="White" Clicked="Setting_Clicked"/>
+                    </Grid>
+                </StackLayout>
+            </StackLayout>
+            <!--Popup Area-->
+            <ContentView x:Name="popupLoadingView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200">
+
+                        <ActivityIndicator x:Name="activityIndicator" Margin="0,50,0,0" VerticalOptions="Center" HorizontalOptions="Center" Color="Black" WidthRequest="30" HeightRequest="30" ></ActivityIndicator>
+                        <Label x:Name="lblLoadingText" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center" VerticalTextAlignment="Center" Text="Loading..."></Label>
+                    </StackLayout>
+                </StackLayout>
+            </ContentView>
+
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

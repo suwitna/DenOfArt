@@ -15,6 +15,20 @@ namespace DenOfArt.Views
         public HomePage()
         {
             InitializeComponent();
+            popupLoadingView.IsVisible = true;
+            activityIndicator.IsRunning = true;
+
+            Device.StartTimer(TimeSpan.FromSeconds(0.50), () => {
+                popupLoadingView.IsVisible = false;
+                activityIndicator.IsRunning = false;
+                return true;
+            });
+
+        }
+
+        async void Home_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new HomePage());
         }
 
         async void Profile_Clicked(object sender, EventArgs e)

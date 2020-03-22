@@ -42,14 +42,40 @@ namespace DenOfArt.Views
 
             clientMeeting = new ScheduleAppointment();
             currentDate = DateTime.Now;
-            startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 10, 9, 0, 0);
-            endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 10, 10, 0, 0);
+            startTime = new DateTime(currentDate.Year, currentDate.Month+1, currentDate.Day, 9, 0, 0);
+            endTime = new DateTime(currentDate.Year, currentDate.Month+1, currentDate.Day, 10, 0, 0);
             clientMeeting.StartTime = startTime;
             clientMeeting.EndTime = endTime;
             clientMeeting.Color = Color.FromHex("#D09292");
             clientMeeting.Subject = "รักษารากฟันครั้งที่ 2";
             appointmentCollection.Add(clientMeeting);
             schedule.DataSource = appointmentCollection;
+
+            popupLoadingView.IsVisible = true;
+            activityIndicator.IsRunning = true;
+
+            Device.StartTimer(TimeSpan.FromSeconds(2), () => {
+                popupLoadingView.IsVisible = false;
+                activityIndicator.IsRunning = false;
+                return true;
+            });
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () => {
+                var result = await DisplayAlert("ออกจากแอพพลิเคชั่น", "ท่านกำลังออกจากระบบ โปรดยืนยัน?", "ตกลง", "ยกเลิก");
+                if (result)
+                {
+                    // await this.Navigation.PopAsync(); // or anything else
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                    }
+                }
+            });
+
+            return true;
         }
     }
 }
