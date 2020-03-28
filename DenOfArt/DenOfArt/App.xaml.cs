@@ -12,6 +12,7 @@ namespace DenOfArt
             NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
             MainPage = new NavigationPage(new LoginPage());
+            //MainPage = new NavigationPage(new LocationTrackerPage());
         }
 
         protected override void OnStart()

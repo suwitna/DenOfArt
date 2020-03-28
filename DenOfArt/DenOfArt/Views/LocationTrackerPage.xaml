@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             mc:Ignorable="d"
+             x:Class="DenOfArt.Views.LocationTrackerPage">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="10"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackLayout Grid.Row="0" VerticalOptions="StartAndExpand" Padding="0">
+                <maps:Map WidthRequest="450" HeightRequest="450" 
+                          x:Name="MyMap"
+                          IsShowingUser="True"
+                          MapType="Street"
+                          />
+            </StackLayout>
+            <StackLayout Grid.Row="1" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                <Label x:Name="txtLat"/>
+                <Label x:Name="txtLong"/>
+                <Button x:Name="btnGetLocation" Text="แจ้งพิกัดล่าสุด" BackgroundColor="#0077be" TextColor="White" WidthRequest="200"/>
+            </StackLayout>
+            <!--
+            <StackLayout Grid.Row="2" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                <ListView x:Name="lstPersons">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Name}"></TextCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Button x:Name="btnAdd" Text="Add" WidthRequest="200"/>
+                <Button x:Name="btnUpdate" Text="Update" WidthRequest="200"/>
+            </StackLayout>
+            -->
+        </Grid>
+        
+    </ContentPage.Content>
+</ContentPage>
