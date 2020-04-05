@@ -6,6 +6,14 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
              mc:Ignorable="d"
              x:Class="DenOfArt.Views.SchedulePage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="AddAppointment" Text="เลื่อน" Order="Primary" Priority="0"/>
+        <!--
+        <ToolbarItem x:Name="ToolbarCancel" Text="ยกเลิก" Order="Primary" Priority="1"/>
+        <ToolbarItem x:Name="ToolbarSave" Text="บันทึก" Order="Primary" Priority="2"/>
+        -->
+
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <StackLayout>

@@ -17,6 +17,12 @@ namespace DenOfArt.Views
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjIyOTkzQDMxMzcyZTM0MmUzMEFiRHhQTms2NTJySzBzZ1dhM2xhTml0RVJxTVBwZ0QrWHVMVjBZblNSMUk9");
             InitializeComponent();
+            ImageTab.Tapped += ImageTab_Tapped;
+        }
+
+        private void ImageTab_Tapped(object sender, EventArgs e)
+        {
+            AppointmentDate.Focus();
         }
     }
 }

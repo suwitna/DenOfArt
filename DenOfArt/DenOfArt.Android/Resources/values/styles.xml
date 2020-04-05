@@ -22,8 +22,11 @@
     <item name="windowActionModeOverlay">true</item>
 
     <item name="android:datePickerDialogTheme">@style/AppCompatDialogStyle</item>
+    <item name="android:actionMenuTextColor">#00ff00</item>
   </style>
-
+  <style name="CustomTab" parent="@android:style/Widget.Holo.ActionBar.TabText">
+    <item name="android:textSize">7sp</item>
+  </style>
   <style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
     <item name="colorAccent">#FF4081</item>
   </style>

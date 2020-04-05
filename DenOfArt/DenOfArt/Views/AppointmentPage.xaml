@@ -7,44 +7,66 @@
              xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
              mc:Ignorable="d"
              x:Class="DenOfArt.Views.AppointmentPage">
-    <ContentPage.BindingContext>
-        <local:MonthViewPageViewModel/>
-    </ContentPage.BindingContext>
-    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="AddAppointment" Text="บันทึก" Order="Primary" Priority="0"/>
+    </ContentPage.ToolbarItems>
+    <NavigationPage.TitleView>
+        <Grid>
+            <Label x:Name="titleName" Text="เลื่อนการนัดหมาย" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" TextColor="White" FontSize="20"></Label>
+        </Grid>
+    </NavigationPage.TitleView>
     <ContentPage.Content>
         <StackLayout>
-            <schedule:SfSchedule x:Name="shedule1" FirstDayOfWeek="2" ScheduleView="MonthView" Locale="th" DataSource="{Binding Meetings}" HeightRequest="450">
-                <schedule:SfSchedule.ViewHeaderStyle>
-                    <schedule:ViewHeaderStyle
-                        BackgroundColor="#cceeff"
-                        DayTextColor="#666699"
-                        DayFontFamily="Arial">
-                    </schedule:ViewHeaderStyle>
-                </schedule:SfSchedule.ViewHeaderStyle>
-                <schedule:SfSchedule.MonthViewSettings>
-                    <schedule:MonthViewSettings 
-                        ShowAgendaView="true"
-                        TodayBackground="#ff66ff"
-                        SelectionTextColor="#00cc00"/>
-                </schedule:SfSchedule.MonthViewSettings>
-
-                <schedule:SfSchedule.AppointmentMapping>
-                    <schedule:ScheduleAppointmentMapping
-                        EndTimeMapping="EndTime"
-                        StartTimeMapping="StartTime"
-                        SubjectMapping="Subject"/>
-                </schedule:SfSchedule.AppointmentMapping>
-            </schedule:SfSchedule>
-            <!--
-            <syncfusion:SfSchedule x:Name="schedule" DataSource="{Binding Meetings}" ShowAppointmentsInline="true" ScheduleView="MonthView" AllowAppointmentDrag="True">
-                <syncfusion:SfSchedule.AppointmentMapping>
-                    <syncfusion:ScheduleAppointmentMapping 
-                    EndTimeMapping="EndTime"
-                    StartTimeMapping="StartTime"
-                    SubjectMapping="Subject"/>
-                </syncfusion:SfSchedule.AppointmentMapping>
-            </syncfusion:SfSchedule>
-            -->
+            <Grid BackgroundColor="White"  Margin="0,0,0,20" VerticalOptions="StartAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="1" Text="วันเลื่อนการนัดหมาย" VerticalOptions="EndAndExpand"/>
+                <Label Grid.Row="0" Grid.Column="3" Text=" เวลา" VerticalOptions="EndAndExpand"/>
+                <DatePicker Grid.Row="1" 
+                            Grid.Column="1" 
+                            x:Name="AppointmentDate" 
+                            Format="dd/MM/yyyy"
+                            BackgroundColor="#ffb3ba"/>
+                <Image Grid.Row="1" 
+                       Grid.Column="2"
+                       x:Name="ImgCalendar"
+                       Source="date_s.png" 
+                       HeightRequest="25" 
+                       VerticalOptions="Center" 
+                       HorizontalOptions="StartAndExpand">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer x:Name="ImageTab"
+                                    NumberOfTapsRequired="1" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <TimePicker Grid.Row="1" 
+                            Grid.Column="3" 
+                            x:Name="AppointmentTime" 
+                            Format="hh:mm tt"
+                            
+                            BackgroundColor="#ffb3ba"/>
+                <Label Grid.Row="2" Grid.Column="1" Text="หมายเหตุ"/>
+                
+                <Entry Grid.Row="3" 
+                       Grid.Column="1" 
+                       Grid.ColumnSpan="4" 
+                       x:Name="Subject" 
+                       HeightRequest="100" 
+                       HorizontalOptions="FillAndExpand"
+                       BackgroundColor="#ffb3ba"/>
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

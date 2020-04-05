@@ -189,4 +189,13 @@
   <ItemGroup>
     <BundleResource Include="Resources\camera_b.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\date_s.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\appoint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\history.png" />
+  </ItemGroup>
 </Project>

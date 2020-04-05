@@ -17,6 +17,7 @@ namespace DenOfArt.Views
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjIyOTkzQDMxMzcyZTM0MmUzMEFiRHhQTms2NTJySzBzZ1dhM2xhTml0RVJxTVBwZ0QrWHVMVjBZblNSMUk9");
             InitializeComponent();
+            AddAppointment.Clicked += AddAppointment_Clicked;
 
             ScheduleAppointmentCollection appointmentCollection = new ScheduleAppointmentCollection();
             //Creating new event   
@@ -32,8 +33,8 @@ namespace DenOfArt.Views
 
             clientMeeting = new ScheduleAppointment();
             currentDate = DateTime.Now;
-            startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 3, 13, 0, 0);
-            endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day + 3, 14, 0, 0);
+            startTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 13, 0, 0);
+            endTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 18, 0, 0);
             clientMeeting.StartTime = startTime;
             clientMeeting.EndTime = endTime;
             clientMeeting.Color = Color.FromHex("#C094CC");
@@ -50,6 +51,7 @@ namespace DenOfArt.Views
             clientMeeting.Subject = "รักษารากฟันครั้งที่ 2";
             appointmentCollection.Add(clientMeeting);
             schedule.DataSource = appointmentCollection;
+            schedule.SelectedDate = currentDate;
 
             popupLoadingView.IsVisible = true;
             activityIndicator.IsRunning = true;
@@ -59,6 +61,11 @@ namespace DenOfArt.Views
                 activityIndicator.IsRunning = false;
                 return true;
             });
+        }
+
+        private async void AddAppointment_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AppointmentPage());
         }
 
         protected override bool OnBackButtonPressed()

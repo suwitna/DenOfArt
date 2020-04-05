@@ -38,7 +38,7 @@ namespace DenOfArt.Views
 
         async void History_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new LocationTrackerPage());
+            await Navigation.PushAsync(new HistoryPage());
         }
 
         async void Schedule_Clicked(object sender, EventArgs e)

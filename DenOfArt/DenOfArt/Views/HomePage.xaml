@@ -19,7 +19,7 @@
                         </Grid.RowDefinitions>
                         <Button Text="หน้าหลัก" Grid.Row="0" BackgroundColor="#0077be" TextColor="White"/>
                         <Button Text="โปรไฟล์" Grid.Row="1" BackgroundColor="#0077be" TextColor="White" Clicked="Profile_Clicked"/>
-                        <Button Text="ประวัติการเดินทาง" Grid.Row="2" BackgroundColor="#0077be" TextColor="White" Clicked="History_Clicked"/>
+                        <Button Text="ข้อมูลการรักษา" Grid.Row="2" BackgroundColor="#0077be" TextColor="White" Clicked="History_Clicked"/>
                         <Button Text="ข้อมูลการนัดหมาย" Grid.Row="3" BackgroundColor="#0077be" TextColor="White" Clicked="Schedule_Clicked"/>
                         <Button Text="ตั้งค่า" Grid.Row="4" BackgroundColor="#0077be" TextColor="White" Clicked="Setting_Clicked"/>
                     </Grid>
