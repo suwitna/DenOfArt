@@ -1,4 +1,8 @@
-﻿using DenOfArt.Tables;
+﻿using Android.Content;
+using Android.Widget;
+using DenOfArt.API;
+using DenOfArt.Tables;
+using Refit;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -15,13 +19,22 @@ namespace DenOfArt.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RegisterPage : ContentPage
     {
+        Context context;
+        APIRequestHelper apiRequestHelper;
+        IMyAPI myAPI;
         public RegisterPage()
         {
             NavigationPage.SetHasNavigationBar(this, true);
             InitializeComponent();
+
+            var currentContext = Android.App.Application.Context;
+            this.context = currentContext;
+
+            myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
+            apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private async void Button_Clicked(object sender, EventArgs e)
         {
             if (EntryUserName.Text == null)
             {
@@ -59,28 +72,42 @@ namespace DenOfArt.Views
                 return;
             }
 
-            var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
-            var db = new SQLiteConnection(dbpath);
-            db.CreateTable<RegUserTable>();
+            Device.BeginInvokeOnMainThread(async () => {
+                //Register data to firebase also
+                var isExist = await apiRequestHelper.RequestCheckUserExistAsync(EntryUserName.Text);
+                if (isExist == "true")
+                {
+                    Toast.MakeText(this.context, "ชื่อผู้ใช้งานซ้ำ", ToastLength.Short).Show();
+                    EntryUserName.PlaceholderColor = Color.FromHex("#ffb3ba");
+                    EntryUserName.Placeholder = "กรุณาระบุชื่อผู้ใช้งานใหม่";
+                    EntryUserName.Focus();
+                    return;
+                }
 
-            var item = new RegUserTable()
-            {
-                UserName = EntryUserName.Text,
-                Password = EntryUserPassword.Text,
-                Email = EntryUserEmail.Text,
-                PhoneNumber = EntryUserPhoneNumber.Text,
-            };
+                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                var db = new SQLiteConnection(dbpath);
+                db.CreateTable<RegUserTable>();
 
-            db.Insert(item);
+                var item = new RegUserTable()
+                {
+                    UserName = EntryUserName.Text,
+                    Password = EntryUserPassword.Text,
+                    Email = EntryUserEmail.Text,
+                    PhoneNumber = EntryUserPhoneNumber.Text,
+                };
 
-            var profile = new ProfileTable()
-            {
-                UserName = EntryUserName.Text,
-            };
-            db.CreateTable<ProfileTable>();
-            db.Insert(profile);
+                db.Insert(item);
 
-            Device.BeginInvokeOnMainThread(async () =>{
+                var profile = new ProfileTable()
+                {
+                    UserName = EntryUserName.Text,
+                };
+                db.CreateTable<ProfileTable>();
+                db.Insert(profile);
+
+            
+                //Register data to firebase also
+                await apiRequestHelper.RequestRegisterUserAsync(EntryUserName.Text, EntryUserPassword.Text, EntryUserEmail.Text, EntryUserPhoneNumber.Text);
                 var result = await this.DisplayAlert(null, "สมัครสมาชิกสำเร็จ!", null, "ตกลง");
 
                 if (!result)

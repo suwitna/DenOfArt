@@ -6,12 +6,16 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using DenOfArt.API;
+using Refit;
 
 namespace DenOfArt.Droid
 {
     [Activity(Label = "DenOfArt", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        APIRequestHelper apiRequestHelper;
+        IMyAPI myAPI;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -27,6 +31,8 @@ namespace DenOfArt.Droid
             // CrossCurrentActivity.Current.Activity is still NULL
 
             LoadApplication(new App());
+
+            
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

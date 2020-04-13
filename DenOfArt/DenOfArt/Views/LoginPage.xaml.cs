@@ -1,4 +1,8 @@
-﻿using DenOfArt.Tables;
+﻿using Android.Content;
+using Android.Widget;
+using DenOfArt.API;
+using DenOfArt.Tables;
+using Refit;
 using SQLite;
 using System;
 using System.IO;
@@ -10,11 +14,21 @@ namespace DenOfArt.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : ContentPage
     {
+        Context context;
+        APIRequestHelper apiRequestHelper;
+        IMyAPI myAPI;
+
         public LoginPage()
         {
             NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
             Application.Current.Properties.Clear();
+
+            var currentContext = Android.App.Application.Context;
+            this.context = currentContext;
+
+            myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
+            apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
         }
         protected override bool OnBackButtonPressed()
         {
@@ -27,7 +41,7 @@ namespace DenOfArt.Views
                     {
                         Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                     }
-                } 
+                }
             });
 
             return true;
@@ -44,6 +58,47 @@ namespace DenOfArt.Views
 
         async void Login_Clicked(object sender, EventArgs e)
         {
+            if (EntryUser.Text == null)
+            {
+                //await this.DisplayAlert(null, "กรุณาระบุชื่อผู้ใช้งาน", null, "ตกลง");
+                EntryUser.PlaceholderColor = Color.FromHex("#ffb3ba");
+                EntryUser.Placeholder = "กรุณาระบุชื่อผู้ใช้งาน";
+                EntryUser.Focus();
+                return;
+            }
+
+            if (EntryPassword.Text == null)
+            {
+                //await this.DisplayAlert(null, "กรุณาระบุรหัสผ่าน", null, "ตกลง");
+                EntryPassword.PlaceholderColor = Color.FromHex("#ffb3ba");
+                EntryPassword.Placeholder = "กรุณาระบุรหัสผ่าน";
+                EntryPassword.Focus();
+                return;
+            }
+
+            //Register data to firebase also
+            var result = await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
+            if (result == "true")
+            {
+
+                    Toast.MakeText(context, "Login Successfull", ToastLength.Short).Show();
+                    Application.Current.Properties.Add("USER_NAME", EntryUser.Text);
+                    App.Current.MainPage = new MainPage();
+            }
+            else
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    var result2 = await this.DisplayAlert(null, "ข้อผิดพลาด! ไม่พบข้อมูลผู้ใช้งาน\nกรุณาตรวจสอบชื่อผู้ใช้งานและรหัสผ่าน", null, "ตกลง");
+
+                    if (!result2)
+                    {
+                        EntryUser.Focus();
+                    }
+                });
+            }
+
+            /*
             var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
             var db = new SQLiteConnection(dbpath);
             db.CreateTable<RegUserTable>();
@@ -82,10 +137,9 @@ namespace DenOfArt.Views
                         EntryUser.Focus();
                     }
                 });
+
             }
+           */
         }
-
-
-
     }
 }

@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="FirebaseDatabase.net" Version="4.0.4" />
+    <PackageReference Include="Refit" Version="5.1.67" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="5.1.67" />
     <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />
     <PackageReference Include="Syncfusion.Xamarin.SfCalendar" Version="17.4.0.55" />
     <PackageReference Include="Syncfusion.Xamarin.SfSchedule" Version="17.4.0.55" />
@@ -33,6 +35,9 @@
   <ItemGroup>
     <Compile Update="Views\HistoryPage.xaml.cs">
       <DependentUpon>HistoryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\APITestPage.xaml.cs">
+      <DependentUpon>APITestPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
