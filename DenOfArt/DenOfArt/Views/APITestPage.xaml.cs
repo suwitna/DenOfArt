@@ -4,6 +4,7 @@ using DenOfArt.Tables;
 using Refit;
 using SQLite;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -28,7 +29,8 @@ namespace DenOfArt.Views
 
         private async void BtnLogin_Clicked(object sender, EventArgs e)
         {
-            await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
+            //await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
+            apiRequestHelper.RequestAppointmentAsync(EntryUser.Text);
         }
 
         protected override bool OnBackButtonPressed()

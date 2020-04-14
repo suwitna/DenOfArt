@@ -1,11 +1,13 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Widget;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace DenOfArt.API
 {
@@ -72,6 +74,18 @@ namespace DenOfArt.API
 
             string result = await myAPI.LoginUser(data);
             return result;
+        }
+
+        public async Task<RootAppointmentObject> RequestAppointmentAsync(string username)
+        {
+            //Create Dialog
+            //Create Parameter to POST request
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("username", username);
+
+            RootAppointmentObject response = await myAPI.GetAppointment(data);
+
+            return response;
         }
     }
 }

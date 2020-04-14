@@ -11,8 +11,8 @@ namespace DenOfArt
         public App()
         {
             NavigationPage.SetHasNavigationBar(this, false);
-            App._apiURL = "https://mysterious-brook-25806.herokuapp.com/";
-            //App._apiURL = "http://192.168.1.41:3000";
+            //App._apiURL = "https://mysterious-brook-25806.herokuapp.com/";
+            App._apiURL = "http://192.168.1.41:3000";
             InitializeComponent();
             MainPage = new NavigationPage(new LoginPage());
             //MainPage = new NavigationPage(new LocationTrackerPage());
