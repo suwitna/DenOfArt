@@ -51,18 +51,7 @@ namespace DenOfArt.Views
                     {
                         foreach (var data in Data)
                         {
-                            if (data.IsApprove != "Y")
-                            {
-                                AppointmentView view = new AppointmentView();
-                                view.HN = "หมายเลข HN: " + data.HN;
-                                view.AppointmentDate = data.AppointmentDate;
-                                view.AppointmentTime = data.AppointmentTime;
-                                view.Subject = data.Subject;
-                                view.CustomerName = data.CustomerName;
-
-                                listAppr.Add(view);
-                            }
-                            else if (data.IsApprove == "Y" && data.IsTreat == "Y")
+                            if (data.IsCancel == "Y" || data.IsTreat == "Y")
                             {
                                 AppointmentView view = new AppointmentView();
                                 view.HN = "หมายเลข HN: " + data.HN;
@@ -71,9 +60,31 @@ namespace DenOfArt.Views
                                 view.Subject = data.Subject;
                                 view.CustomerName = data.CustomerName;
                                 view.Reason = "หมายเหตุ : " + data.TreatDetail;
-                                view.Status = "รักษาแล้ว";
+                                view.Status = data.Status;
 
                                 listHist.Add(view);
+                            }
+                            else
+                            {
+                                AppointmentView view = new AppointmentView();
+                                view.HN = "หมายเลข HN: " + data.HN;
+                                view.AppointmentDate = data.AppointmentDate;
+                                view.AppointmentTime = data.AppointmentTime;
+                                view.Subject = data.Subject;
+                                view.CustomerName = data.CustomerName;
+                                view.Status = data.Status;
+
+                                if (data.IsApprove == "" && data.IsCancel =="" && data.IsPostpone == "" && data.IsTreat == "")
+                                {
+                                    view.ImgAcceptReject = "waiting";
+                                }
+                                else if(data.IsApprove == "Y")
+                                {
+                                    view.ImgAcceptReject = "accept";
+                                }
+                                
+                                listAppr.Add(view);
+
                             }
                         }
                     }

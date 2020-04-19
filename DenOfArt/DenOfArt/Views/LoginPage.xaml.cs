@@ -22,6 +22,7 @@ namespace DenOfArt.Views
         {
             NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
+
             Application.Current.Properties.Clear();
 
             var currentContext = Android.App.Application.Context;
@@ -76,14 +77,33 @@ namespace DenOfArt.Views
                 return;
             }
 
+            //Cloud database
             //Register data to firebase also
             var result = await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
             if (result == "true")
             {
+                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                var db = new SQLiteConnection(dbpath);
+                var reguser = db.GetTableInfo("RegUserTable");
+                if (reguser.Count == 0)
+                {
+                    RegUserJson user = await apiRequestHelper.RequestGetUserDataAsync(EntryUser.Text);
 
-                    Toast.MakeText(context, "Login Successfull", ToastLength.Short).Show();
-                    Application.Current.Properties.Add("USER_NAME", EntryUser.Text);
-                    App.Current.MainPage = new MainPage();
+                    db.CreateTable<RegUserTable>();
+
+                    var item = new RegUserTable()
+                    {
+                        UserName = user.UserName,
+                        Password = user.Password,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                    };
+
+                    db.Insert(item);
+                }
+                Toast.MakeText(context, "Login Successfull", ToastLength.Short).Show();
+                Application.Current.Properties.Add("USER_NAME", EntryUser.Text);
+                App.Current.MainPage = new MainPage();
             }
             else
             {
@@ -97,7 +117,10 @@ namespace DenOfArt.Views
                     }
                 });
             }
+            //End of Cloud database
 
+
+            //Local database
             /*
             var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
             var db = new SQLiteConnection(dbpath);
@@ -140,6 +163,7 @@ namespace DenOfArt.Views
 
             }
            */
+            //End of Local database
         }
     }
 }

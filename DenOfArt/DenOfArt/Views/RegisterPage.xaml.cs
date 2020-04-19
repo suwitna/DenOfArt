@@ -101,6 +101,8 @@ namespace DenOfArt.Views
                 var profile = new ProfileTable()
                 {
                     UserName = EntryUserName.Text,
+                    Email = EntryUserEmail.Text,
+                    PhoneNumber = EntryUserPhoneNumber.Text,
                 };
                 db.CreateTable<ProfileTable>();
                 db.Insert(profile);
@@ -108,6 +110,14 @@ namespace DenOfArt.Views
             
                 //Register data to firebase also
                 await apiRequestHelper.RequestRegisterUserAsync(EntryUserName.Text, EntryUserPassword.Text, EntryUserEmail.Text, EntryUserPhoneNumber.Text);
+                ProfileJson json = new ProfileJson();
+                json.UserName = EntryUserName.Text;
+                json.Email = EntryUserEmail.Text;
+                json.PhoneNumber = EntryUserPhoneNumber.Text;
+                json.CreateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+                await apiRequestHelper.RequestAddProfileAsync(json);
+
+
                 var result = await this.DisplayAlert(null, "สมัครสมาชิกสำเร็จ!", null, "ตกลง");
 
                 if (!result)

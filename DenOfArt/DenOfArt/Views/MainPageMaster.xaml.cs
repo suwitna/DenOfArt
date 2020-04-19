@@ -1,6 +1,8 @@
-﻿using DenOfArt.MenuItems;
+﻿using DenOfArt.API;
+using DenOfArt.MenuItems;
 using DenOfArt.Tables;
 using Plugin.Media.Abstractions;
+using Refit;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -24,9 +26,18 @@ namespace DenOfArt.Views
         public ListView ListView;
         byte[] ImageBytes;
 
+        APIRequestHelper apiRequestHelper;
+        IMyAPI myAPI;
+
         public MainPageMaster()
         {
             InitializeComponent();
+            //Initial database API
+            var currentContext = Android.App.Application.Context;
+
+            myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
+            apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
+            //End of initial databaseAPI
 
             BindingContext = new MainPageMasterViewModel();
             ListView = MenuItemsListView;
@@ -38,7 +49,8 @@ namespace DenOfArt.Views
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
                 var username = Application.Current.Properties["USER_NAME"] as string;
-
+                //Remove codes for retreiving data from local database
+                /*
                 var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
                 var db = new SQLiteConnection(dbpath);
                 var myquery = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
@@ -47,27 +59,75 @@ namespace DenOfArt.Views
                 {
 
                 }
+                */
+                //End of local database
 
-                var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-                if (profile != null)
+                RootProfileObject profileData = await apiRequestHelper.RequestProfileAsync(username);
+                if(profileData != null && profileData.Data != null && profileData.Data.Count > 0) 
                 {
-                    string fullName = "";
-
-                    if (profile.FirstName != null)
-                        fullName = profile.FirstName;
-
-                    if (profile.LastName != null)
-                        fullName += " " + profile.LastName;
-
-                    AccountName.Text = fullName;
-
-                    if (profile.Content != null)
+                    var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                    var db = new SQLiteConnection(dbpath);
+                    var profileTable = db.GetTableInfo("ProfileTable");
+                    if (profileTable.Count == 0)
                     {
-                        ImageBytes = profile.Content;
-                        Stream sm = BytesToStream(ImageBytes);
-                        selectedImage.Source = ImageSource.FromStream(() => sm);
-                    }
+                        List<ProfileJson> Data = profileData.Data;
+                        ProfileJson json = Data.First<ProfileJson>();
 
+                        db.CreateTable<ProfileTable>();
+                        ProfileTable item = new ProfileTable()
+                        {
+                            UserName = username,
+                            FirstName = json.FirstName,
+                            LastName = json.LastName,
+                            Gender = json.Gender,
+                            DateOfBirth = json.DateOfBirth,
+                            Address1 = json.Address1,
+                            Address2 = json.Address2,
+                            Address3 = json.Address3,
+                            Email = json.Email,
+                            PhoneNumber = json.PhoneNumber,
+                            CreateDate = DateTime.Now,
+                        };
+                        db.Insert(item);
+
+                        //
+                        string fullName = "";
+                        if (item.FirstName != null)
+                        { 
+                            fullName = item.FirstName;
+                        }
+
+                        if (item.LastName != null)
+                        {
+                            fullName += " " + item.LastName;
+                        }
+
+                        AccountName.Text = fullName;
+                    }
+                    else
+                    {
+                        var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+                        if (profile != null)
+                        {
+                            string fullName = "";
+
+                            if (profile.FirstName != null)
+                                fullName = profile.FirstName;
+
+                            if (profile.LastName != null)
+                                fullName += " " + profile.LastName;
+
+                            AccountName.Text = fullName;
+
+                            if (profile.Content != null)
+                            {
+                                ImageBytes = profile.Content;
+                                Stream sm = BytesToStream(ImageBytes);
+                                selectedImage.Source = ImageSource.FromStream(() => sm);
+                            }
+                        }
+                    }
+                    
                 }
             }
         }

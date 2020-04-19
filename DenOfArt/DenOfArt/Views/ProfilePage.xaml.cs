@@ -1,6 +1,8 @@
-﻿using DenOfArt.Tables;
+﻿using DenOfArt.API;
+using DenOfArt.Tables;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
+using Refit;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -31,9 +33,18 @@ namespace DenOfArt.Views
         string tmpAddr3;
         bool isCancelMode = false;
 
+        APIRequestHelper apiRequestHelper;
+        IMyAPI myAPI;
         public ProfilePage()
         {
             InitializeComponent();
+            //Initial API
+            var currentContext = Android.App.Application.Context;
+
+            myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
+            apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
+            //End of initial
+
             SetEditMode(false);
             popupLoadingView.IsVisible = true;
             activityIndicator.IsRunning = true;
@@ -61,7 +72,7 @@ namespace DenOfArt.Views
 
             return true;
         }
-        private void LoadProfile()
+        private async void LoadProfile()
         {
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
@@ -126,78 +137,82 @@ namespace DenOfArt.Views
 
                     }
 
-                    var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-                    if (myquery != null && profile != null)
+                    RootProfileObject profileData = await apiRequestHelper.RequestProfileAsync(username);
+                    if (profileData != null && profileData.Data != null && profileData.Data.Count > 0)
                     {
-                        EntryFirstName.Text = profile.FirstName;
-                        EntryLastName.Text = profile.LastName;
-                        tmpFirstName = profile.FirstName;
-                        tmpLastName = profile.LastName;
-
-                        if (profile.Content != null)
+                        var profile = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+                        if (myquery != null && profile != null)
                         {
-                            if (tmpImageBytes == null)
-                            {
-                                tmpImageBytes = profile.Content;
-                                Stream sm = BytesToStream(tmpImageBytes);
-                                selectedImage.Source = ImageSource.FromStream(() => sm);
-                            }
-                            else
-                            {
+                            EntryFirstName.Text = profile.FirstName;
+                            EntryLastName.Text = profile.LastName;
+                            tmpFirstName = profile.FirstName;
+                            tmpLastName = profile.LastName;
 
-                                var imageCompare = tmpImageBytes.SequenceEqual(profile.Content);
-                                if (!imageCompare)
+                            if (profile.Content != null)
+                            {
+                                if (tmpImageBytes == null)
                                 {
                                     tmpImageBytes = profile.Content;
                                     Stream sm = BytesToStream(tmpImageBytes);
                                     selectedImage.Source = ImageSource.FromStream(() => sm);
                                 }
+                                else
+                                {
+
+                                    var imageCompare = tmpImageBytes.SequenceEqual(profile.Content);
+                                    if (!imageCompare)
+                                    {
+                                        tmpImageBytes = profile.Content;
+                                        Stream sm = BytesToStream(tmpImageBytes);
+                                        selectedImage.Source = ImageSource.FromStream(() => sm);
+                                    }
+                                }
+
+
                             }
 
+                            if (profile.Gender != null)
+                            {
+                                SelectGender.SelectedItem = profile.Gender;
+                                tmpGender = profile.Gender;
+                            }
 
-                        }
+                            if (profile.DateOfBirth != null)
+                            {
+                                DateTime date = DateTime.ParseExact(profile.DateOfBirth, "dd/MM/yyyy", null);
+                                SelectDateOfBirth.Date = date;
+                                tmpDateofBirth = date;
+                            }
 
-                        if (profile.Gender != null)
-                        {
-                            SelectGender.SelectedItem = profile.Gender;
-                            tmpGender = profile.Gender;
-                        }
+                            if (profile.PhoneNumber != null)
+                            {
+                                EntryUserPhoneNumber.Text = profile.PhoneNumber;
+                                tmpPhone = profile.PhoneNumber;
+                            }
 
-                        if (profile.DateOfBirth != null)
-                        {
-                            DateTime date = DateTime.ParseExact(profile.DateOfBirth, "dd/MM/yyyy", null);
-                            SelectDateOfBirth.Date = date;
-                            tmpDateofBirth = date;
-                        }
+                            if (profile.Email != null)
+                            {
+                                EntryEmail.Text = profile.Email;
+                                tmpEmail = profile.Email;
+                            }
 
-                        if (profile.PhoneNumber != null)
-                        {
-                            EntryUserPhoneNumber.Text = profile.PhoneNumber;
-                            tmpPhone = profile.PhoneNumber;
-                        }
+                            if (profile.Address1 != null)
+                            {
+                                EntryAddress1.Text = profile.Address1;
+                                tmpAddr1 = profile.Address1;
+                            }
 
-                        if (profile.Email != null)
-                        {
-                            EntryEmail.Text = profile.Email;
-                            tmpEmail = profile.Email;
-                        }
+                            if (profile.Address2 != null)
+                            {
+                                EntryAddress2.Text = profile.Address2;
+                                tmpAddr2 = profile.Address2;
+                            }
 
-                        if (profile.Address1 != null)
-                        {
-                            EntryAddress1.Text = profile.Address1;
-                            tmpAddr1 = profile.Address1;
-                        }
-
-                        if (profile.Address2 != null)
-                        {
-                            EntryAddress2.Text = profile.Address2;
-                            tmpAddr2 = profile.Address2;
-                        }
-
-                        if (profile.Address3 != null)
-                        {
-                            EntryAddress3.Text = profile.Address3;
-                            tmpAddr3 = profile.Address3;
+                            if (profile.Address3 != null)
+                            {
+                                EntryAddress3.Text = profile.Address3;
+                                tmpAddr3 = profile.Address3;
+                            }
                         }
                     }
                 }
@@ -256,71 +271,110 @@ namespace DenOfArt.Views
             return stream;
         }
 
-        private void SaveProfile(string username, string email)
+        private async void SaveProfile(string username, string email)
         {
-            var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
-            var db = new SQLiteConnection(dbpath);
-            db.CreateTable<ProfileTable>();
-
-            var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-
-            if (item == null)
+            RootProfileObject profileData = await apiRequestHelper.RequestProfileAsync(username);
+            if (profileData != null && profileData.Data != null && profileData.Data.Count > 0)
             {
-                item = new ProfileTable()
-                {
-                    UserName = username,
-                    FirstName = EntryFirstName.Text,
-                    LastName = EntryLastName.Text,
-                    Gender = SelectGender.SelectedItem.ToString(),
-                    DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy"),
-                    Address1 = EntryAddress1.Text,
-                    Address2 = EntryAddress2.Text,
-                    Address3 = EntryAddress3.Text,
-                    Email = email,
-                    PhoneNumber = EntryUserPhoneNumber.Text,
-                    Content = tmpImageBytesNew,
+                List<ProfileJson> Data = profileData.Data;
+                ProfileJson json = Data.First<ProfileJson>();
 
-                    CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now,
-                };
+                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                var db = new SQLiteConnection(dbpath);
+                db.CreateTable<ProfileTable>();
 
-                db.Insert(item);
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", null, "ตกลง");
-                });
-                return;
-            }
-            else
-            {
-                item.FirstName = EntryFirstName.Text;
-                item.LastName = EntryLastName.Text;
-                item.Gender = SelectGender.SelectedItem.ToString();
-                item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
-                item.Address1 = EntryAddress1.Text;
-                item.Address2 = EntryAddress2.Text;
-                item.Address3 = EntryAddress3.Text;
-                item.Email = email;
-                item.PhoneNumber = EntryUserPhoneNumber.Text;
+                var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
 
-                if(tmpImageBytesNew != null)
+                if (item == null)
                 {
-                    item.Content = tmpImageBytesNew;
+                    item = new ProfileTable()
+                    {
+                        UserName = username,
+                        FirstName = EntryFirstName.Text,
+                        LastName = EntryLastName.Text,
+                        Gender = SelectGender.SelectedItem.ToString(),
+                        DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy"),
+                        Address1 = EntryAddress1.Text,
+                        Address2 = EntryAddress2.Text,
+                        Address3 = EntryAddress3.Text,
+                        Email = email,
+                        PhoneNumber = EntryUserPhoneNumber.Text,
+                        Content = tmpImageBytesNew,
+
+                        CreateDate = DateTime.Now,
+                        UpdateDate = DateTime.Now,
+                    };
+
+                    db.Insert(item);
+
+                    json.UserName = username;
+                    json.FirstName = EntryFirstName.Text;
+                    json.LastName = EntryLastName.Text;
+                    json.Gender = SelectGender.SelectedItem.ToString();
+                    json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                    json.Address1 = EntryAddress1.Text;
+                    json.Address2 = EntryAddress2.Text;
+                    json.Address3 = EntryAddress3.Text;
+                    json.Email = email;
+                    json.PhoneNumber = EntryUserPhoneNumber.Text;
+                    json.CreateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+                    json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+                    
+                    await apiRequestHelper.RequestAddProfileAsync(json);
+
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", null, "ตกลง");
+                    });
+                    return;
                 }
-               
-                item.UpdateDate = DateTime.Now;
-
-                db.RunInTransaction(() =>
+                else
                 {
-                    db.Update(item);
-                });
+                    item.FirstName = EntryFirstName.Text;
+                    item.LastName = EntryLastName.Text;
+                    item.Gender = SelectGender.SelectedItem.ToString();
+                    item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                    item.Address1 = EntryAddress1.Text;
+                    item.Address2 = EntryAddress2.Text;
+                    item.Address3 = EntryAddress3.Text;
+                    item.Email = email;
+                    item.PhoneNumber = EntryUserPhoneNumber.Text;
 
-                //Refresh Profile Image
-                var md = (MasterDetailPage)Application.Current.MainPage;
-                var menu = (MainPageMaster)md.Master;
-                menu.LoadProfile();
+                    if (tmpImageBytesNew != null)
+                    {
+                        item.Content = tmpImageBytesNew;
+                    }
+                    item.UpdateDate = DateTime.Now;
 
-                return;
+                    json.UserName = username;
+                    json.ProfileId = item.ProfileId.ToString();
+                    json.FirstName = EntryFirstName.Text;
+                    json.LastName = EntryLastName.Text;
+                    json.Gender = SelectGender.SelectedItem.ToString();
+                    json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                    json.Address1 = EntryAddress1.Text;
+                    json.Address2 = EntryAddress2.Text;
+                    json.Address3 = EntryAddress3.Text;
+                    json.Email = email;
+                    json.PhoneNumber = EntryUserPhoneNumber.Text;
+                    json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+
+                    db.RunInTransaction(() =>
+                    {
+                        db.Update(item);
+                    });
+
+                   
+                   var result = await apiRequestHelper.RequestUpdateProfileAsync(json);
+                   Console.WriteLine("SaveProfile result:", result);
+
+                    //Refresh Profile Image
+                    var md = (MasterDetailPage)Application.Current.MainPage;
+                    var menu = (MainPageMaster)md.Master;
+                    menu.LoadProfile();
+
+                    return;
+                }
             }
         }
 
@@ -371,7 +425,13 @@ namespace DenOfArt.Views
                             popupSavingView.IsVisible = true;
                             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
                                 popupSavingView.IsVisible = false;
-                                return true;
+                                ToolbarItems.Clear();
+                                ToolbarItems.Add(new ToolbarItem("แก้ไข", null, async () =>
+                                {
+                                    AddSaveCancelNavItem();
+                                }));
+                                SetEditMode(false);
+                                return false;
                             });
                         });
                     }
@@ -381,6 +441,8 @@ namespace DenOfArt.Views
                         Device.BeginInvokeOnMainThread(async () =>
                         {
                             await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E100)", null, "ตกลง");
+                            AddEditNavItem();
+                            SetEditMode(false);
                         });
                     }
                 }
@@ -389,6 +451,8 @@ namespace DenOfArt.Views
                     Device.BeginInvokeOnMainThread(async () =>
                     {
                         await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E101)", null, "ตกลง");
+                        AddEditNavItem();
+                        SetEditMode(false);
                         await Navigation.PushAsync(new MainPage());
                     });
                 }
@@ -399,11 +463,11 @@ namespace DenOfArt.Views
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E01)", null, "ตกลง");
+                    AddEditNavItem();
+                    SetEditMode(false);
                     await Navigation.PushAsync(new LoginPage());
                 });
             }
-            AddEditNavItem();
-            SetEditMode(false);
             return;
         }
 

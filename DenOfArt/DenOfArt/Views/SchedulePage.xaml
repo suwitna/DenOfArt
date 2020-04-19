@@ -35,24 +35,24 @@
                     <syncfusion:SfSchedule.MonthViewSettings>
                         <syncfusion:MonthViewSettings
                         ShowAgendaView="true"
-                        TodayBackground="#ff66ff"
+                        TodayBackground="#ca0f6f"
                         SelectionTextColor="#00cc00">
                             <syncfusion:MonthViewSettings.AgendaViewStyle>
                                 <syncfusion:AgendaViewStyle 
                                 DateFontColor="Black" 
-                                HeaderHeight="40" 
+                                HeaderHeight="60" 
                                 DateFormat="dd MMMM, yyyy" 
                                 DateFontAttributes="None" 
                                 DateFontSize="15" 
                                 DateFontFamily="Arial" 
-                                TimeFontColor="#414F6F" 
+                                TimeFontColor="#FFFFFF" 
                                 TimeFontSize="15" 
                                 TimeFontFamily="Arial" 
                                 TimeFormat="hh:mm a"
                                 TimeFontAttributes="None" 
-                                BackgroundColor="#E1F7D5" 
-                                SubjectFontColor="#414f6f" 
-                                SubjectFontSize="13" 
+                                BackgroundColor="#FFFFFF" 
+                                SubjectFontColor="#FFFFFF" 
+                                SubjectFontSize="14" 
                                 SubjectFontFamily="Arial" 
                                 SubjectFontAttributes="None" />
                             </syncfusion:MonthViewSettings.AgendaViewStyle>

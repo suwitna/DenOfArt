@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace DenOfArt.Tables
+namespace DenOfArt.API
 {
-    public class ProfileTable
+    public class ProfileJson
     {
-        [SQLite.PrimaryKey, SQLite.AutoIncrement]
-        public Guid ProfileId { get; set; }
+        public string ProfileId { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -17,10 +16,11 @@ namespace DenOfArt.Tables
         public string Address3 { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public byte[] Content { get; set; }
+        public string Content { get; set; }
         public string FileName { get; set; }
         public string LineID { get; set; }
-        public DateTime CreateDate { get; set; }
-        public DateTime UpdateDate { get; set; }
+
+        public string CreateDate { get; set; }
+        public string UpdateDate { get; set; }
     }
 }

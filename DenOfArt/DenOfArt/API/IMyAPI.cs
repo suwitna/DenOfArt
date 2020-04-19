@@ -17,7 +17,19 @@ namespace DenOfArt.API
         [Post("/DenOfArtUserExist")]
         Task<string> UserExist([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
+        [Post("/DenOfArtGetUserData")]
+        Task<RegUserJson> GetUserData([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
         [Post("/DenOfArtGetAppointment")]
         Task<RootAppointmentObject> GetAppointment([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
+        [Post("/DenOfArtGetProfile")]
+        Task<RootProfileObject> GetProfile([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+        
+        [Post("/DenOfArtAddProfile")]
+        Task<string> AddProfile([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
+        [Post("/DenOfArtUpdateProfile")]
+        Task<string> UpdateProfile([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
     }
 }

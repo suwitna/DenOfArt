@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DenOfArt
+namespace DenOfArt.API
 {
     public class RootAppointmentObject
     {

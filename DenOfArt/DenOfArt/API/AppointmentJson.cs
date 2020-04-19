@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DenOfArt
+namespace DenOfArt.API
 {
     public class AppointmentJson
     {
@@ -12,6 +12,7 @@ namespace DenOfArt
         public string Subject { get; set; }
         public string AppointmentDate { get; set; }
         public string AppointmentTime { get; set; }
+        public string Status { get; set; }
         public string IsApprove { get; set; }
         public string IsTreat { get; set; }
         public string TreatBy { get; set; }

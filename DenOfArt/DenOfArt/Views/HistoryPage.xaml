@@ -42,7 +42,13 @@
                                     <Image Source="appoint"/>
 
                                 </StackLayout>
-                                <Label x:Name="AppointDate" 
+                                <StackLayout Grid.Row="1" Grid.Column="5" 
+                                    Grid.ColumnSpan="2" Grid.RowSpan="2"
+                                    VerticalOptions="End">
+                                     <Image HeightRequest="70" WidthRequest="70" Source="{Binding ImgAcceptReject}"/>
+
+                                </StackLayout>
+                                    <Label x:Name="AppointDate" 
                                    Grid.Row="0" Grid.Column="1"
                                    Grid.ColumnSpan="7"
                                    Text="{Binding AppointmentDate}"
@@ -72,7 +78,16 @@
                                    FontSize="16"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Start"/>
-                            </Grid>
+                                <Label
+                                    Grid.Row="4" Grid.Column="3"
+                                    Grid.ColumnSpan="4"
+                                    Text="{Binding Status}"
+                                    FontAttributes="Bold"
+                                    TextColor="#0C0C0C"
+                                    FontSize="16"
+                                    VerticalOptions="End"
+                                    HorizontalOptions="EndAndExpand"/>
+                                </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

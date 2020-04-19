@@ -61,7 +61,7 @@
                         </StackLayout>
                     </Grid>
                 </StackLayout>
-                <!--Popup Area-->
+                <!--Loading Popup-->
                 <ContentView x:Name="popupLoadingView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
                         <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200" BackgroundColor="White">
