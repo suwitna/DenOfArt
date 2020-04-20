@@ -8,6 +8,7 @@
              x:Class="DenOfArt.Views.SchedulePage">
     <ContentPage.ToolbarItems>
         <ToolbarItem x:Name="AddAppointment" Text="เลื่อน" Order="Primary" Priority="0"/>
+        <ToolbarItem x:Name="CancelAppointment" Text="ยกเลิก" Order="Primary" Priority="1"/>
         <!--
         <ToolbarItem x:Name="ToolbarCancel" Text="ยกเลิก" Order="Primary" Priority="1"/>
         <ToolbarItem x:Name="ToolbarSave" Text="บันทึก" Order="Primary" Priority="2"/>

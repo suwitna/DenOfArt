@@ -30,6 +30,8 @@ namespace DenOfArt.Views
 
             myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
+
+            btnLogin.IsEnabled = true;
         }
         protected override bool OnBackButtonPressed()
         {
@@ -77,6 +79,7 @@ namespace DenOfArt.Views
                 return;
             }
 
+            btnLogin.IsEnabled = false;
             //Cloud database
             //Register data to firebase also
             var result = await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
@@ -101,9 +104,14 @@ namespace DenOfArt.Views
 
                     db.Insert(item);
                 }
-                Toast.MakeText(context, "Login Successfull", ToastLength.Short).Show();
-                Application.Current.Properties.Add("USER_NAME", EntryUser.Text);
-                App.Current.MainPage = new MainPage();
+                Device.StartTimer(TimeSpan.FromSeconds(2), () => {
+                    btnLogin.IsEnabled = true;
+
+                    Toast.MakeText(context, "Login Successfull", ToastLength.Short).Show();
+                    Application.Current.Properties.Add("USER_NAME", EntryUser.Text);
+                    App.Current.MainPage = new MainPage();
+                    return false;
+                });
             }
             else
             {
@@ -113,10 +121,13 @@ namespace DenOfArt.Views
 
                     if (!result2)
                     {
+                        btnLogin.IsEnabled = true;
                         EntryUser.Focus();
                     }
+                    
                 });
             }
+
             //End of Cloud database
 
 

@@ -15,12 +15,12 @@ using Xamarin.Forms.Xaml;
 namespace DenOfArt.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AppointmentPage : ContentPage
+    public partial class AppointmentCancelPage : ContentPage
     {
         Context context;
         APIRequestHelper apiRequestHelper;
         IMyAPI myAPI;
-        public AppointmentPage()
+        public AppointmentCancelPage()
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjIyOTkzQDMxMzcyZTM0MmUzMEFiRHhQTms2NTJySzBzZ1dhM2xhTml0RVJxTVBwZ0QrWHVMVjBZblNSMUk9");
             InitializeComponent();
@@ -30,11 +30,15 @@ namespace DenOfArt.Views
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
 
             ImageTabFrom.Tapped += ImageTabFrom_Tapped;
-            ImageTabTo.Tapped += ImageTabTo_Tapped;
-            SaveAppointment.Clicked += SaveAppointment_Clicked;
+            CancelAppointment.Clicked += CancelAppointment_Clicked;
         }
 
-        private async void SaveAppointment_Clicked(object sender, EventArgs e)
+        private void ImageTabFrom_Tapped(object sender, EventArgs e)
+        {
+            AppointmentDateFrom.Focus();
+        }
+
+        private async void CancelAppointment_Clicked(object sender, EventArgs e)
         {
             var username = Application.Current.Properties["USER_NAME"] as string;
             if (username != null & username != "")
@@ -49,34 +53,22 @@ namespace DenOfArt.Views
                     if (result == "true")
                     {
                         json.IsApprove = "";
-                        json.IsPostpone = "Y";
-                        json.PostponeDate = AppointmentDateTo.Date.ToString("dd/MM/yyyy");
-                        json.PostponeTime = AppointmentTimeTo.Time.ToString(@"hh\:mm");
-                        json.PostponeReason = Subject.Text.Trim();
+                        json.IsCancel = "Y";
+                        json.CancelReason = Subject.Text.Trim();
                         json.Status = "รอการยืนยัน";
 
                         await apiRequestHelper.RequestUpdateAppointmentAsync(json);
-
                         Toast.MakeText(context, "บันทึกข้อมูลสำเร็จ", ToastLength.Short).Show();
                         List<Page> li = Navigation.NavigationStack.ToList();
                         Page last = li.ElementAt(li.Count - 1);
                         Navigation.RemovePage(last);
                     }
-                    else{
+                    else
+                    {
                         Toast.MakeText(context, "ไม่พบข้อมูลนัดหมาย วัน" + json.AppointmentDate + " เวลา: " + json.AppointmentTime + " !", ToastLength.Short).Show();
                     }
                 });
             }
-        }
-
-        private void ImageTabFrom_Tapped(object sender, EventArgs e)
-        {
-            AppointmentDateFrom.Focus();
-        }
-
-        private void ImageTabTo_Tapped(object sender, EventArgs e)
-        {
-            AppointmentDateTo.Focus();
         }
     }
 }

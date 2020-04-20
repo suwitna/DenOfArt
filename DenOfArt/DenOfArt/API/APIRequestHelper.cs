@@ -88,14 +88,62 @@ namespace DenOfArt.API
             return result;
         }
 
-        public async Task<RootAppointmentObject> RequestAppointmentAsync(string username)
+        public async Task<RootAppointmentObject> RequestAllAppointmentAsync(string username)
         {
             //Create Dialog
             //Create Parameter to POST request
             Dictionary<string, object> data = new Dictionary<string, object>();
             data.Add("username", username);
 
-            RootAppointmentObject response = await myAPI.GetAppointment(data);
+            RootAppointmentObject response = await myAPI.GetAllAppointment(data);
+
+            return response;
+        }
+
+        public async Task<string> RequestCheckExistAppointmentAsync(AppointmentJson json)
+        {
+            //Create Dialog
+            //Create Parameter to POST request
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("username", json.UserName);
+            data.Add("appointmentdate", json.AppointmentDate);
+            data.Add("appointmenttime", json.AppointmentTime);
+
+            string response = await myAPI.ExistAppointment(data);
+
+            return response;
+        }
+
+        public async Task<string> RequestUpdateAppointmentAsync(AppointmentJson json)
+        {
+            //Create Dialog
+            //Create Parameter to POST request
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("username", json.UserName);
+            data.Add("hn", json.HN);
+            data.Add("customername", json.CustomerName);
+            data.Add("subject", json.Subject);
+            data.Add("appointmentdate", json.AppointmentDate);
+            data.Add("appointmenttime", json.AppointmentTime);
+            data.Add("status", json.Status);
+            data.Add("isapprove", json.IsApprove);
+            data.Add("istreat", json.IsTreat);
+            data.Add("treatby", json.TreatBy);
+            data.Add("treatdetail", json.TreatDetail);
+            data.Add("treatdate", json.TreatDate);
+            data.Add("treattime", json.TreatTime);
+            data.Add("iscancel", json.IsCancel);
+            data.Add("cancelreason", json.CancelReason);
+            data.Add("ispostpone", json.IsPostpone);
+            data.Add("postponedate", json.PostponeDate);
+            data.Add("postponetime", json.PostponeTime);
+            data.Add("postponereason", json.PostponeReason);
+            data.Add("createby", json.CreateBy);
+            data.Add("createdate", json.CreateDate);
+            data.Add("updateby", json.UpdateBy);
+            data.Add("updatedate", json.UpdateDate);
+
+            string response = await myAPI.UpdateAppointment(data);
 
             return response;
         }

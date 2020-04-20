@@ -2,17 +2,15 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:local="clr-namespace:DenOfArt.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
              mc:Ignorable="d"
-             x:Class="DenOfArt.Views.AppointmentPage">
+             x:Class="DenOfArt.Views.AppointmentCancelPage">
     <ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="SaveAppointment" Text="บันทึก" Order="Primary" Priority="0"/>
+        <ToolbarItem x:Name="CancelAppointment" Text="บันทึก" Order="Primary" Priority="0"/>
     </ContentPage.ToolbarItems>
     <NavigationPage.TitleView>
         <Grid>
-            <Label x:Name="titleName" Text="เลื่อนนัด" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" TextColor="White" FontSize="20"></Label>
+            <Label x:Name="titleName" Text="ยกเลิกนัด" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" TextColor="White" FontSize="20"></Label>
         </Grid>
     </NavigationPage.TitleView>
     <ContentPage.Content>
@@ -31,11 +29,9 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <!--FROM DATE-->
-                <Label Grid.Row="0" Grid.Column="1" Text="วันที่ต้องการเลื่อนนัด" VerticalOptions="EndAndExpand"/>
+                <Label Grid.Row="0" Grid.Column="1" Text="วันที่ต้องการยกเลิก" VerticalOptions="EndAndExpand"/>
                 <Label Grid.Row="0" Grid.Column="3" Text=" เวลา" VerticalOptions="EndAndExpand"/>
                 <DatePicker Grid.Row="1" 
                             Grid.Column="1" 
@@ -60,35 +56,10 @@
                             Format="HH:mm"
                             
                             BackgroundColor="#FAEEE6"/>
-                <!--TO DATE-->
-                <Label Grid.Row="2" Grid.Column="1" Text="เลื่อนนัดเป็นวันที่" VerticalOptions="EndAndExpand"/>
-                <Label Grid.Row="2" Grid.Column="3" Text=" เวลา" VerticalOptions="EndAndExpand"/>
-                <DatePicker Grid.Row="3" 
-                            Grid.Column="1" 
-                            x:Name="AppointmentDateTo" 
-                            Format="dd/MM/yyyy"
-                            BackgroundColor="#DAF5F4"/>
-                <Image Grid.Row="3" 
-                       Grid.Column="2"
-                       x:Name="ImgCalendarTo"
-                       Source="date_s.png" 
-                       HeightRequest="25" 
-                       VerticalOptions="Center" 
-                       HorizontalOptions="StartAndExpand">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer x:Name="ImageTabTo"
-                                    NumberOfTapsRequired="1" />
-                    </Image.GestureRecognizers>
-                </Image>
-                <TimePicker Grid.Row="3" 
-                            Grid.Column="3" 
-                            x:Name="AppointmentTimeTo" 
-                            Format="HH:mm"
-                            
-                            BackgroundColor="#DAF5F4"/>
-                <Label Grid.Row="4" Grid.Column="1" Text="หมายเหตุ"/>
+      
+                <Label Grid.Row="2" Grid.Column="1" Text="หมายเหตุ"/>
                 
-                <Entry Grid.Row="5" 
+                <Entry Grid.Row="3" 
                        Grid.Column="1" 
                        Grid.ColumnSpan="4" 
                        x:Name="Subject" 

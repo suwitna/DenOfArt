@@ -33,6 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\AppointmentCancelPage.xaml.cs">
+      <DependentUpon>AppointmentCancelPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\HistoryPage.xaml.cs">
       <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>

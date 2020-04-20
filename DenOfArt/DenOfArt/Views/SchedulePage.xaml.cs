@@ -22,6 +22,8 @@ namespace DenOfArt.Views
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjIyOTkzQDMxMzcyZTM0MmUzMEFiRHhQTms2NTJySzBzZ1dhM2xhTml0RVJxTVBwZ0QrWHVMVjBZblNSMUk9");
             InitializeComponent();
+            popupLoadingView.IsVisible = true;
+            activityIndicator.IsRunning = true;
 
             var currentContext = Android.App.Application.Context;
 
@@ -29,6 +31,7 @@ namespace DenOfArt.Views
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
 
             AddAppointment.Clicked += AddAppointment_Clicked;
+            CancelAppointment.Clicked += CancelAppointment_Clicked;
 
             LoadAppointment();
         }
@@ -43,7 +46,7 @@ namespace DenOfArt.Views
                 
                 List<AppointmentView> listAppr = new List<AppointmentView>();
                 List<AppointmentView> listHist = new List<AppointmentView>();
-                RootAppointmentObject appointmentData = await apiRequestHelper.RequestAppointmentAsync(username);
+                RootAppointmentObject appointmentData = await apiRequestHelper.RequestAllAppointmentAsync(username);
                 if (appointmentData != null)
                 {
                     List<AppointmentJson> Data = appointmentData.Data;
@@ -68,10 +71,7 @@ namespace DenOfArt.Views
                     }
                 }
 
-                popupLoadingView.IsVisible = true;
-                activityIndicator.IsRunning = true;
-
-                Device.StartTimer(TimeSpan.FromSeconds(2), () => {
+                Device.StartTimer(TimeSpan.FromSeconds(1), () => {
                     popupLoadingView.IsVisible = false;
                     activityIndicator.IsRunning = false;
                     return true;
@@ -126,6 +126,11 @@ namespace DenOfArt.Views
         private async void AddAppointment_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AppointmentPage());
+        }
+
+        private async void CancelAppointment_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AppointmentCancelPage());
         }
 
         protected override bool OnBackButtonPressed()

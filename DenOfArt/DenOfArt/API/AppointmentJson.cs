@@ -22,6 +22,8 @@ namespace DenOfArt.API
         public string IsCancel { get; set; }
         public string CancelReason { get; set; }
         public string IsPostpone { get; set; }
+        public string PostponeDate { get; set; }
+        public string PostponeTime { get; set; }
         public string PostponeReason { get; set; }
         public string CreateBy { get; set; }
         public string CreateDate { get; set; }

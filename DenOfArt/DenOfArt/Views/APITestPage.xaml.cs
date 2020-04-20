@@ -30,7 +30,7 @@ namespace DenOfArt.Views
         private async void BtnLogin_Clicked(object sender, EventArgs e)
         {
             //await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
-            apiRequestHelper.RequestAppointmentAsync(EntryUser.Text);
+            apiRequestHelper.RequestAllAppointmentAsync(EntryUser.Text);
         }
 
         protected override bool OnBackButtonPressed()

@@ -37,7 +37,7 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </StackLayout>
-                        <Button Text="เข้าสู่ระบบ" FontSize="Medium" Grid.Row="4" Grid.ColumnSpan="3" BackgroundColor="#0077be" TextColor="White" CornerRadius="10" Clicked="Login_Clicked"/>
+                        <Button x:Name="btnLogin" Text="เข้าสู่ระบบ" FontSize="Medium" Grid.Row="4" Grid.ColumnSpan="3" BackgroundColor="#0077be" TextColor="White" CornerRadius="10" Clicked="Login_Clicked"/>
 
                         <StackLayout Grid.Row="5" Grid.Column="0" VerticalOptions="CenterAndExpand">
                             <Label HeightRequest="1" BackgroundColor="Gray"></Label>

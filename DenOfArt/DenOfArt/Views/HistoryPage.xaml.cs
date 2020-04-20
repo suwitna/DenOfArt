@@ -33,6 +33,8 @@ namespace DenOfArt.Views
         {
 
             base.OnAppearing();
+            popupLoadingView.IsVisible = true;
+            activityIndicator.IsRunning = true;
             await GetHistoryData();
         }
         public async Task GetHistoryData()
@@ -43,7 +45,7 @@ namespace DenOfArt.Views
             {
                 List<AppointmentView> listAppr = new List<AppointmentView>();
                 List<AppointmentView> listHist = new List<AppointmentView>();
-                RootAppointmentObject appointmentData = await apiRequestHelper.RequestAppointmentAsync(username);
+                RootAppointmentObject appointmentData = await apiRequestHelper.RequestAllAppointmentAsync(username);
                 if (appointmentData != null)
                 {
                     List<AppointmentJson> Data = appointmentData.Data;
@@ -51,7 +53,7 @@ namespace DenOfArt.Views
                     {
                         foreach (var data in Data)
                         {
-                            if (data.IsCancel == "Y" || data.IsTreat == "Y")
+                            if (data.IsApprove == "Y" || data.IsCancel == "Y" || data.IsTreat == "Y")
                             {
                                 AppointmentView view = new AppointmentView();
                                 view.HN = "หมายเลข HN: " + data.HN;
@@ -82,7 +84,22 @@ namespace DenOfArt.Views
                                 {
                                     view.ImgAcceptReject = "accept";
                                 }
-                                
+                                else if (data.IsPostpone == "Y")
+                                {
+                                    view.CustomerName = "เลื่อนเป็นวันที่ " + data.PostponeDate+ " "+ data.PostponeTime;
+                                    view.Subject = data.PostponeReason;
+
+                                    view.ImgAcceptReject = "waiting";
+                                }
+                                else if (data.IsCancel == "Y")
+                                {
+                                    view.CustomerName = "ยกเลิกนัด";
+
+                                    view.Subject = data.CancelReason;
+
+                                    view.ImgAcceptReject = "waiting";
+                                }
+
                                 listAppr.Add(view);
 
                             }
@@ -159,6 +176,12 @@ namespace DenOfArt.Views
                 listHistory.ItemsSource = listHist;
                 listApprove.ItemsSource = listAppr;
             }
+
+            Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+                popupLoadingView.IsVisible = false;
+                activityIndicator.IsRunning = false;
+                return true;
+            });
         }
     }
 }

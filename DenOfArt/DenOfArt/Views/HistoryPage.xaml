@@ -7,18 +7,19 @@
              x:Class="DenOfArt.Views.HistoryPage">
   <!--Pages can be added as references or inline-->
     <ContentPage Title="หน้าหลัก">
+        <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="520"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="10"></RowDefinition>
             </Grid.RowDefinitions>
-            <StackLayout Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+            <StackLayout Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" BackgroundColor="White">
                 <ListView x:Name="listApprove" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid BackgroundColor="White"  Margin="0,0,0,20" VerticalOptions="StartAndExpand">
+                            <Grid BackgroundColor="White"  Margin="0,0,0,15" VerticalOptions="StartAndExpand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"/>
                                     <ColumnDefinition Width="20"/>
@@ -44,8 +45,8 @@
                                 </StackLayout>
                                 <StackLayout Grid.Row="1" Grid.Column="5" 
                                     Grid.ColumnSpan="2" Grid.RowSpan="2"
-                                    VerticalOptions="End">
-                                     <Image HeightRequest="70" WidthRequest="70" Source="{Binding ImgAcceptReject}"/>
+                                    VerticalOptions="End" HorizontalOptions="End">
+                                     <Image HeightRequest="65" WidthRequest="65" Source="{Binding ImgAcceptReject}"/>
 
                                 </StackLayout>
                                     <Label x:Name="AppointDate" 
@@ -94,6 +95,17 @@
                 </ListView>
             </StackLayout>
         </Grid>
+            <!--Loading Popup-->
+            <ContentView x:Name="popupLoadingView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200">
+
+                        <ActivityIndicator x:Name="activityIndicator" Margin="0,50,0,0" VerticalOptions="Center" HorizontalOptions="Center" Color="Black" WidthRequest="30" HeightRequest="30" ></ActivityIndicator>
+                        <Label x:Name="lblLoadingText" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center" VerticalTextAlignment="Center" Text="Loading..."></Label>
+                    </StackLayout>
+                </StackLayout>
+            </ContentView>
+        </AbsoluteLayout>
     </ContentPage>
     <ContentPage Title="ประวัติย้อนหลัง">
         <Grid>

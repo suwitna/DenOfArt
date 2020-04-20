@@ -1,4 +1,6 @@
-﻿using DenOfArt.API;
+﻿using Android.Content;
+using Android.Widget;
+using DenOfArt.API;
 using DenOfArt.Tables;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
@@ -33,6 +35,7 @@ namespace DenOfArt.Views
         string tmpAddr3;
         bool isCancelMode = false;
 
+        Context context;
         APIRequestHelper apiRequestHelper;
         IMyAPI myAPI;
         public ProfilePage()
@@ -40,7 +43,7 @@ namespace DenOfArt.Views
             InitializeComponent();
             //Initial API
             var currentContext = Android.App.Application.Context;
-
+            this.context = currentContext;
             myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
             //End of initial
@@ -49,11 +52,6 @@ namespace DenOfArt.Views
             popupLoadingView.IsVisible = true;
             activityIndicator.IsRunning = true;
             LoadProfile();
-            Device.StartTimer(TimeSpan.FromSeconds(0.50), () => {
-                popupLoadingView.IsVisible = false;
-                activityIndicator.IsRunning = false;
-                return true;
-            });
         }
 
         protected override bool OnBackButtonPressed()
@@ -171,44 +169,44 @@ namespace DenOfArt.Views
 
                             }
 
-                            if (profile.Gender != null)
+                            if (profile.Gender != null && profile.Gender.Trim() != "")
                             {
                                 SelectGender.SelectedItem = profile.Gender;
                                 tmpGender = profile.Gender;
                             }
 
-                            if (profile.DateOfBirth != null)
+                            if (profile.DateOfBirth != null && profile.DateOfBirth.Trim() != "")
                             {
                                 DateTime date = DateTime.ParseExact(profile.DateOfBirth, "dd/MM/yyyy", null);
                                 SelectDateOfBirth.Date = date;
                                 tmpDateofBirth = date;
                             }
 
-                            if (profile.PhoneNumber != null)
+                            if (profile.PhoneNumber != null && profile.PhoneNumber.Trim() != "")
                             {
                                 EntryUserPhoneNumber.Text = profile.PhoneNumber;
                                 tmpPhone = profile.PhoneNumber;
                             }
 
-                            if (profile.Email != null)
+                            if (profile.Email != null && profile.Email.Trim() != "")
                             {
                                 EntryEmail.Text = profile.Email;
                                 tmpEmail = profile.Email;
                             }
 
-                            if (profile.Address1 != null)
+                            if (profile.Address1 != null && profile.Address1.Trim() != "")
                             {
                                 EntryAddress1.Text = profile.Address1;
                                 tmpAddr1 = profile.Address1;
                             }
 
-                            if (profile.Address2 != null)
+                            if (profile.Address2 != null && profile.Address2.Trim() != "")
                             {
                                 EntryAddress2.Text = profile.Address2;
                                 tmpAddr2 = profile.Address2;
                             }
 
-                            if (profile.Address3 != null)
+                            if (profile.Address3 != null && profile.Address3.Trim() != "")
                             {
                                 EntryAddress3.Text = profile.Address3;
                                 tmpAddr3 = profile.Address3;
@@ -217,6 +215,12 @@ namespace DenOfArt.Views
                     }
                 }
             }
+
+            Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+                popupLoadingView.IsVisible = false;
+                activityIndicator.IsRunning = false;
+                return true;
+            });
         }
 
         private async void SelectImage_Clicked(object sender, EventArgs e)
@@ -225,7 +229,7 @@ namespace DenOfArt.Views
 
             if (!CrossMedia.Current.IsPickPhotoSupported)
             {
-                await DisplayAlert(null, "โปรแกรมไม่รองรับการ\n(E102)", "ตกลง", null);
+                Toast.MakeText(context, "โปรแกรมไม่รองรับการ\n(E103)", ToastLength.Short).Show();
                 return;
             }
 
@@ -324,7 +328,7 @@ namespace DenOfArt.Views
 
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        var result = await this.DisplayAlert(null, "เพิ่มข้อมูลลูกค้าเสร็จแล้ว", null, "ตกลง");
+                        Toast.MakeText(context, "บันทึกข้อมูลสำเร็จ", ToastLength.Short).Show();
                     });
                     return;
                 }
@@ -422,9 +426,9 @@ namespace DenOfArt.Views
 
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            popupSavingView.IsVisible = true;
+                            //popupSavingView.IsVisible = true;
                             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
-                                popupSavingView.IsVisible = false;
+                                //popupSavingView.IsVisible = false;
                                 ToolbarItems.Clear();
                                 ToolbarItems.Add(new ToolbarItem("แก้ไข", null, async () =>
                                 {
@@ -440,7 +444,7 @@ namespace DenOfArt.Views
                         System.Diagnostics.Debug.WriteLine(sqlEx);
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E100)", null, "ตกลง");
+                            Toast.MakeText(context, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E100)", ToastLength.Short).Show();
                             AddEditNavItem();
                             SetEditMode(false);
                         });
@@ -450,7 +454,7 @@ namespace DenOfArt.Views
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E101)", null, "ตกลง");
+                        Toast.MakeText(context, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E101)", ToastLength.Short).Show();
                         AddEditNavItem();
                         SetEditMode(false);
                         await Navigation.PushAsync(new MainPage());
@@ -462,7 +466,7 @@ namespace DenOfArt.Views
                 Application.Current.Properties.Clear();
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await this.DisplayAlert(null, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E01)", null, "ตกลง");
+                    Toast.MakeText(context, "มีข้อผิดพลาดเกิดขึ้น\nโปรดลองใหม่อีกครั้งในภายหลัง\n(E102)", ToastLength.Short).Show();
                     AddEditNavItem();
                     SetEditMode(false);
                     await Navigation.PushAsync(new LoginPage());
@@ -497,16 +501,16 @@ namespace DenOfArt.Views
             ToolbarItems.Remove(ToolbarItems.First<ToolbarItem>());
             ToolbarItems.Add(new ToolbarItem("บันทึก", null, async () =>
             {
-                var result =  await DisplayAlert(null, "ต้องกการบันทึกการแก้ไข้ข้อมูล?", "บันทึก", "ยกเลิก");
-                if(result)
-                { 
+                //var result =  await DisplayAlert(null, "ต้องกการบันทึกการแก้ไข้ข้อมูล?", "บันทึก", "ยกเลิก");
+                //if(result)
+                //{ 
                     SaveProfile();
                     return;
-                }
-                else
-                {
-                    return;
-                }
+                //}
+                //else
+                //{
+                //    return;
+                //}
             }));
             ToolbarItems.Add(new ToolbarItem("ยกเลิก", null, async () =>
             {
