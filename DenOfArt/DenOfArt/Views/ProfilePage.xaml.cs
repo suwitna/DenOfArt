@@ -85,7 +85,7 @@ namespace DenOfArt.Views
                         selectedImage.Source = ImageSource.FromStream(() => sm);
                     }
 
-                    if (tmpGender != null)
+                    if (tmpGender != null && SelectGender.SelectedItem != null)
                     {
                         SelectGender.SelectedItem = tmpGender;
                     }
@@ -275,109 +275,194 @@ namespace DenOfArt.Views
             return stream;
         }
 
-        private async void SaveProfile(string username, string email)
+        //private async void SaveProfile(string username, string email)
+        private async void SaveProfile(string username)
         {
             RootProfileObject profileData = await apiRequestHelper.RequestProfileAsync(username);
             if (profileData != null && profileData.Data != null && profileData.Data.Count > 0)
             {
                 List<ProfileJson> Data = profileData.Data;
-                ProfileJson json = Data.First<ProfileJson>();
-
-                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
-                var db = new SQLiteConnection(dbpath);
-                db.CreateTable<ProfileTable>();
-
-                var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
-
-                if (item == null)
+                if(Data.Count > 0)
                 {
-                    item = new ProfileTable()
+                    ProfileJson json = Data.First<ProfileJson>();
+
+                    var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                    var db = new SQLiteConnection(dbpath);
+                    var userprofile = db.GetTableInfo("ProfileTable");
+
+                    if (userprofile.Count == 0)
                     {
-                        UserName = username,
-                        FirstName = EntryFirstName.Text,
-                        LastName = EntryLastName.Text,
-                        Gender = SelectGender.SelectedItem.ToString(),
-                        DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy"),
-                        Address1 = EntryAddress1.Text,
-                        Address2 = EntryAddress2.Text,
-                        Address3 = EntryAddress3.Text,
-                        Email = email,
-                        PhoneNumber = EntryUserPhoneNumber.Text,
-                        Content = tmpImageBytesNew,
+                        //TODO เอาข้อมูลจาก Cloud มาอัพเดท Local DB
+                        var item = new ProfileTable()
+                        {
+                            UserName = username,
+                            FirstName = EntryFirstName.Text,
+                            LastName = EntryLastName.Text,
+                            Gender = ((SelectGender == null || SelectGender.SelectedItem  == null)? "" : SelectGender.SelectedItem.ToString()),
+                            DateOfBirth = ((SelectDateOfBirth == null || SelectDateOfBirth.Date == null)? "" : SelectDateOfBirth.Date.ToString("dd/MM/yyyy")),
+                            Address1 = EntryAddress1.Text,
+                            Address2 = EntryAddress2.Text,
+                            Address3 = EntryAddress3.Text,
+                            Email = json.Email,
+                            PhoneNumber = json.PhoneNumber,
+                            Content = tmpImageBytesNew,
 
-                        CreateDate = DateTime.Now,
-                        UpdateDate = DateTime.Now,
-                    };
+                            CreateDate = DateTime.Now,
+                            UpdateDate = DateTime.Now,
+                        };
+                        db.CreateTable<ProfileTable>();
+                        db.Insert(item);
 
-                    db.Insert(item);
+                        //json.UserName = username;
+                        json.FirstName = EntryFirstName.Text;
+                        json.LastName = EntryLastName.Text;
+                        if (SelectGender != null && SelectGender.SelectedItem != null)
+                        {
+                            json.Gender = SelectGender.SelectedItem.ToString();
+                        }
+                        if (SelectDateOfBirth != null && SelectDateOfBirth.Date != null)
+                        {
+                            json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                        }
+                        json.Address1 = EntryAddress1.Text;
+                        json.Address2 = EntryAddress2.Text;
+                        json.Address3 = EntryAddress3.Text;
+                        //json.Email = email;
+                        //json.PhoneNumber = EntryUserPhoneNumber.Text;
+                        //json.CreateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+                        json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
 
-                    json.UserName = username;
-                    json.FirstName = EntryFirstName.Text;
-                    json.LastName = EntryLastName.Text;
-                    json.Gender = SelectGender.SelectedItem.ToString();
-                    json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
-                    json.Address1 = EntryAddress1.Text;
-                    json.Address2 = EntryAddress2.Text;
-                    json.Address3 = EntryAddress3.Text;
-                    json.Email = email;
-                    json.PhoneNumber = EntryUserPhoneNumber.Text;
-                    json.CreateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
-                    json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
-                    
-                    await apiRequestHelper.RequestAddProfileAsync(json);
+                        await apiRequestHelper.RequestUpdateProfileAsync(json);
 
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        Toast.MakeText(context, "บันทึกข้อมูลสำเร็จ", ToastLength.Short).Show();
-                    });
-                    return;
-                }
-                else
-                {
-                    item.FirstName = EntryFirstName.Text;
-                    item.LastName = EntryLastName.Text;
-                    item.Gender = SelectGender.SelectedItem.ToString();
-                    item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
-                    item.Address1 = EntryAddress1.Text;
-                    item.Address2 = EntryAddress2.Text;
-                    item.Address3 = EntryAddress3.Text;
-                    item.Email = email;
-                    item.PhoneNumber = EntryUserPhoneNumber.Text;
-
-                    if (tmpImageBytesNew != null)
-                    {
-                        item.Content = tmpImageBytesNew;
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            Toast.MakeText(context, "บันทึกข้อมูลสำเร็จ", ToastLength.Short).Show();
+                        });
                     }
-                    item.UpdateDate = DateTime.Now;
-
-                    json.UserName = username;
-                    json.ProfileId = item.ProfileId.ToString();
-                    json.FirstName = EntryFirstName.Text;
-                    json.LastName = EntryLastName.Text;
-                    json.Gender = SelectGender.SelectedItem.ToString();
-                    json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
-                    json.Address1 = EntryAddress1.Text;
-                    json.Address2 = EntryAddress2.Text;
-                    json.Address3 = EntryAddress3.Text;
-                    json.Email = email;
-                    json.PhoneNumber = EntryUserPhoneNumber.Text;
-                    json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
-
-                    db.RunInTransaction(() =>
+                    else
                     {
-                        db.Update(item);
-                    });
+                        var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
 
-                   
-                   var result = await apiRequestHelper.RequestUpdateProfileAsync(json);
-                   Console.WriteLine("SaveProfile result:", result);
+                        if (item != null)
+                        {
+                            item.FirstName = EntryFirstName.Text;
+                            item.LastName = EntryLastName.Text;
+                            if (SelectGender != null && SelectGender.SelectedItem != null)
+                            {
+                                item.Gender = SelectGender.SelectedItem.ToString();
+                            }
+                            if (SelectDateOfBirth != null && SelectDateOfBirth.Date != null)
+                            {
+                                item.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                            }
+                            item.Address1 = EntryAddress1.Text;
+                            item.Address2 = EntryAddress2.Text;
+                            item.Address3 = EntryAddress3.Text;
+                            //item.Email = email;
+                            item.PhoneNumber = EntryUserPhoneNumber.Text;
 
-                    //Refresh Profile Image
-                    var md = (MasterDetailPage)Application.Current.MainPage;
-                    var menu = (MainPageMaster)md.Master;
-                    menu.LoadProfile();
+                            if (tmpImageBytesNew != null)
+                            {
+                                item.Content = tmpImageBytesNew;
+                            }
+                            item.UpdateDate = DateTime.Now;
 
-                    return;
+                            db.RunInTransaction(() =>
+                            {
+                                db.Update(item);
+                            });
+
+                            json.UserName = username;
+                            json.ProfileId = item.ProfileId.ToString();
+                            json.FirstName = EntryFirstName.Text;
+                            json.LastName = EntryLastName.Text;
+
+                            if (SelectGender != null && SelectGender.SelectedItem != null)
+                            {
+                                json.Gender = SelectGender.SelectedItem.ToString();
+                            }
+                            if (SelectDateOfBirth != null && SelectDateOfBirth.Date != null)
+                            {
+                                json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                            }
+                            json.Address1 = EntryAddress1.Text;
+                            json.Address2 = EntryAddress2.Text;
+                            json.Address3 = EntryAddress3.Text;
+                            //json.Email = email;
+                            //json.PhoneNumber = EntryUserPhoneNumber.Text;
+                            json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+
+
+
+
+                            var result = await apiRequestHelper.RequestUpdateProfileAsync(json);
+                            Console.WriteLine("SaveProfile result:", result);
+
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                Toast.MakeText(context, "บันทึกข้อมูลสำเร็จ", ToastLength.Short).Show();
+                            });
+                        }
+                        else
+                        {
+                            //TODO เอาข้อมูลจาก Cloud มาอัพเดท Local DB
+                            item = new ProfileTable()
+                            {
+                                UserName = username,
+                                FirstName = EntryFirstName.Text,
+                                LastName = EntryLastName.Text,
+                                Gender = ((SelectGender == null || SelectGender.SelectedItem  == null) ? "" : SelectGender.SelectedItem.ToString()),
+                                DateOfBirth = ((SelectDateOfBirth == null || SelectDateOfBirth.Date == null) ? "" : SelectDateOfBirth.Date.ToString("dd/MM/yyyy")),
+                                Address1 = EntryAddress1.Text,
+                                Address2 = EntryAddress2.Text,
+                                Address3 = EntryAddress3.Text,
+                                Email = json.Email,
+                                PhoneNumber = json.PhoneNumber,
+                                Content = tmpImageBytesNew,
+
+                                CreateDate = DateTime.Now,
+                                UpdateDate = DateTime.Now,
+                            };
+                            db.CreateTable<ProfileTable>();
+                            db.Insert(item);
+
+                            //json.UserName = username;
+                            json.FirstName = EntryFirstName.Text;
+                            json.LastName = EntryLastName.Text;
+                            if (SelectGender != null && SelectGender.SelectedItem != null)
+                            {
+                                json.Gender = SelectGender.SelectedItem.ToString();
+                            }
+                            if (SelectDateOfBirth != null && SelectDateOfBirth.Date != null)
+                            {
+                                json.DateOfBirth = SelectDateOfBirth.Date.ToString("dd/MM/yyyy");
+                            }
+                            json.Address1 = EntryAddress1.Text;
+                            json.Address2 = EntryAddress2.Text;
+                            json.Address3 = EntryAddress3.Text;
+                            //json.Email = email;
+                            //json.PhoneNumber = EntryUserPhoneNumber.Text;
+                            //json.CreateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+                            json.UpdateDate = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+
+                            await apiRequestHelper.RequestUpdateProfileAsync(json);
+
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                Toast.MakeText(context, "บันทึกข้อมูลสำเร็จ", ToastLength.Short).Show();
+                            });
+                        }
+                        
+
+                        
+
+                        //Refresh Profile Image
+                        var md = (MasterDetailPage)Application.Current.MainPage;
+                        var menu = (MainPageMaster)md.Master;
+                        menu.LoadProfile();
+
+                        return;
+                    }
                 }
             }
         }
@@ -408,22 +493,22 @@ namespace DenOfArt.Views
             if (Application.Current.Properties.ContainsKey("USER_NAME"))
             {
                 var username = Application.Current.Properties["USER_NAME"] as string;
-                var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
-                var db = new SQLiteConnection(dbpath);
-                var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
+                //var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
+                //var db = new SQLiteConnection(dbpath);
+                //var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(username)).FirstOrDefault();
 
-                if (item != null)
+                if (username != null)
                 {
-                    item.PhoneNumber = EntryUserPhoneNumber.Text;
+                    //item.PhoneNumber = EntryUserPhoneNumber.Text;
                     try
                     {
-                        db.RunInTransaction(() =>
-                        {
-                            db.Update(item);
-                        });
+                        //db.RunInTransaction(() =>
+                        //{
+                        //    db.Update(item);
+                        //});
 
-                        SaveProfile(username, item.Email);
-
+                        //SaveProfile(username, item.Email);
+                        SaveProfile(username);
                         Device.BeginInvokeOnMainThread(async () =>
                         {
                             //popupSavingView.IsVisible = true;

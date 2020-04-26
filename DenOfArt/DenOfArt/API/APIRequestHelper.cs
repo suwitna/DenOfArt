@@ -76,7 +76,7 @@ namespace DenOfArt.API
             //oast.MakeText(context, result, ToastLength.Short).Show();
         }
 
-        public async Task<string> RequestLoginUserAsync(string username, string password)
+        public async Task<RegUserJson> RequestLoginUserAsync(string username, string password)
         {
             //Create Dialog
             //Create Parameter to POST request
@@ -84,8 +84,8 @@ namespace DenOfArt.API
             data.Add("username", username);
             data.Add("password", password);
 
-            string result = await myAPI.LoginUser(data);
-            return result;
+            RegUserJson response = await myAPI.LoginUser(data);
+            return response;
         }
 
         public async Task<RootAppointmentObject> RequestAllAppointmentAsync(string username)

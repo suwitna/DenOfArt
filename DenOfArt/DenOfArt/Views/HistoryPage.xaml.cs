@@ -53,7 +53,7 @@ namespace DenOfArt.Views
                     {
                         foreach (var data in Data)
                         {
-                            if (data.IsApprove == "Y" || data.IsCancel == "Y" || data.IsTreat == "Y")
+                            if (data.IsApprove == "Y" && (data.IsCancel == "Y" || data.IsTreat == "Y"))
                             {
                                 AppointmentView view = new AppointmentView();
                                 view.HN = "หมายเลข HN: " + data.HN;
@@ -63,6 +63,7 @@ namespace DenOfArt.Views
                                 view.CustomerName = data.CustomerName;
                                 view.Reason = "หมายเหตุ : " + data.TreatDetail;
                                 view.Status = data.Status;
+                                view.ImgAcceptReject = "accept";
 
                                 listHist.Add(view);
                             }
@@ -75,12 +76,9 @@ namespace DenOfArt.Views
                                 view.Subject = data.Subject;
                                 view.CustomerName = data.CustomerName;
                                 view.Status = data.Status;
+                                view.ImgAcceptReject = "waiting";
 
-                                if (data.IsApprove == "" && data.IsCancel =="" && data.IsPostpone == "" && data.IsTreat == "")
-                                {
-                                    view.ImgAcceptReject = "waiting";
-                                }
-                                else if(data.IsApprove == "Y")
+                                if(data.IsApprove == "Y")
                                 {
                                     view.ImgAcceptReject = "accept";
                                 }

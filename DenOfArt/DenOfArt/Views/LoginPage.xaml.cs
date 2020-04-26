@@ -5,7 +5,9 @@ using DenOfArt.Tables;
 using Refit;
 using SQLite;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -82,16 +84,14 @@ namespace DenOfArt.Views
             btnLogin.IsEnabled = false;
             //Cloud database
             //Register data to firebase also
-            var result = await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
-            if (result == "true")
+            RegUserJson user = await apiRequestHelper.RequestLoginUserAsync(EntryUser.Text, EntryPassword.Text);
+            if (user != null & user.UserName == EntryUser.Text)
             {
                 var dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "UserDatabase.db");
                 var db = new SQLiteConnection(dbpath);
                 var reguser = db.GetTableInfo("RegUserTable");
                 if (reguser.Count == 0)
                 {
-                    RegUserJson user = await apiRequestHelper.RequestGetUserDataAsync(EntryUser.Text);
-
                     db.CreateTable<RegUserTable>();
 
                     var item = new RegUserTable()
@@ -104,6 +104,84 @@ namespace DenOfArt.Views
 
                     db.Insert(item);
                 }
+                else
+                {
+                    var item = db.Table<RegUserTable>().Where(u => u.UserName.Equals(user.UserName)).FirstOrDefault();
+
+                    if (item == null)
+                    {
+                        var data = new RegUserTable()
+                        {
+                            UserName = user.UserName,
+                            Password = user.Password,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                        };
+                        db.Insert(data);
+                    }
+                }
+                RootProfileObject profileData = await apiRequestHelper.RequestProfileAsync(user.UserName);
+                if (profileData != null && profileData.Data != null && profileData.Data.Count > 0)
+                {
+                    List<ProfileJson> Data = profileData.Data;
+                    if (Data.Count > 0)
+                    {
+                        ProfileJson json = Data.First<ProfileJson>();
+
+                        var userprofile = db.GetTableInfo("ProfileTable");
+                        if (userprofile.Count == 0)
+                        { 
+                            db.CreateTable<ProfileTable>();
+                            var profile = new ProfileTable()
+                            {
+                                UserName = json.UserName,
+                                FirstName = json.FileName,
+                                LastName = json.LastName,
+                                Gender = (json.Gender == null ? "" : json.Gender),
+                                DateOfBirth = (json.DateOfBirth == null ? "" : json.DateOfBirth),
+                                Address1 = json.Address1 == null? "" : json.Address1,
+                                Address2 = json.Address2 == null ? "" : json.Address2,
+                                Address3 = json.Address3 == null ? "" : json.Address3,
+                                Email = json.Email,
+                                PhoneNumber = json.PhoneNumber,
+  
+                                CreateDate = DateTime.Now,
+                                UpdateDate = DateTime.Now,
+                            };
+                            
+                            db.Insert(profile);
+                        }
+                        else
+                        {
+                            var item = db.Table<ProfileTable>().Where(u => u.UserName.Equals(user.UserName)).FirstOrDefault();
+
+                            if (item == null)
+                            {
+                                var profile = new ProfileTable()
+                                {
+                                    UserName = json.UserName,
+                                    FirstName = json.FileName,
+                                    LastName = json.LastName,
+                                    Gender = (json.Gender == null ? "" : json.Gender),
+                                    DateOfBirth = (json.DateOfBirth == null ? "" : json.DateOfBirth),
+                                    Address1 = json.Address1 == null ? "" : json.Address1,
+                                    Address2 = json.Address2 == null ? "" : json.Address2,
+                                    Address3 = json.Address3 == null ? "" : json.Address3,
+                                    Email = json.Email,
+                                    PhoneNumber = json.PhoneNumber,
+
+                                    CreateDate = DateTime.Now,
+                                    UpdateDate = DateTime.Now,
+                                };
+
+                                db.Insert(profile);
+                            }
+                        }
+                    }
+                }
+                
+                ///////////////////
+
                 Device.StartTimer(TimeSpan.FromSeconds(2), () => {
                     btnLogin.IsEnabled = true;
 

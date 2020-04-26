@@ -9,7 +9,7 @@ namespace DenOfArt.API
     public interface IMyAPI
     {
         [Post("/DenOfArtLogin")]
-        Task<string> LoginUser([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+        Task<RegUserJson> LoginUser([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
         
         [Post("/DenOfArtRegister")]
         Task<string> RegisterUser([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);

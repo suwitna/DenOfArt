@@ -47,7 +47,7 @@ namespace DenOfArt.Views
                     {
                         foreach (var data in Data)
                         {
-                            if (data.IsApprove == "Y" || data.IsCancel == "Y" || data.IsTreat == "Y")
+                            if (data.IsApprove == "Y" && (data.IsCancel == "Y" || data.IsTreat == "Y"))
                             {
 
                             }
@@ -61,11 +61,9 @@ namespace DenOfArt.Views
                                 view.CustomerName = data.CustomerName;
                                 view.Status = data.Status;
 
-                                if (data.IsApprove == "" && data.IsCancel == "" && data.IsPostpone == "" && data.IsTreat == "")
-                                {
-                                    view.ImgAcceptReject = "waiting";
-                                }
-                                else if (data.IsApprove == "Y")
+                                view.ImgAcceptReject = "waiting";
+                                
+                                if (data.IsApprove == "Y")
                                 {
                                     view.ImgAcceptReject = "accept";
                                 }
