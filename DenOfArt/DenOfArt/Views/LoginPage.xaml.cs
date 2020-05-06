@@ -34,6 +34,14 @@ namespace DenOfArt.Views
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
 
             btnLogin.IsEnabled = true;
+            activityIndicator.IsRunning = true;
+            activityIndicator.IsEnabled = true;
+            activityIndicator.IsVisible = true;
+        }
+        protected async override void OnAppearing()
+        {
+
+            base.OnAppearing();
         }
         protected override bool OnBackButtonPressed()
         {
@@ -182,7 +190,7 @@ namespace DenOfArt.Views
                 
                 ///////////////////
 
-                Device.StartTimer(TimeSpan.FromSeconds(2), () => {
+                Device.StartTimer(TimeSpan.FromSeconds(0.1), () => {
                     btnLogin.IsEnabled = true;
 
                     Toast.MakeText(context, "Login Successfull", ToastLength.Short).Show();

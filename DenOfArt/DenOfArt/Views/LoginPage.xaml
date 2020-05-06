@@ -62,15 +62,18 @@
                     </Grid>
                 </StackLayout>
                 <!--Loading Popup-->
-                <ContentView x:Name="popupLoadingView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <ActivityIndicator x:Name="activityIndicator"  Margin="0,50,0,0" IsRunning="True" IsVisible="True" IsEnabled="True" VerticalOptions="Center" HorizontalOptions="Center" Color="BlueViolet" WidthRequest="30" HeightRequest="30" ></ActivityIndicator>
+                <!--
+                <ContentView x:Name="popupLoadingView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="True" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
                         <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200" BackgroundColor="White">
 
-                            <ActivityIndicator x:Name="activityIndicator" Margin="0,50,0,0" VerticalOptions="Center" HorizontalOptions="Center" Color="Black" WidthRequest="30" HeightRequest="30" ></ActivityIndicator>
+                            <ActivityIndicator x:Name="activityIndicator" Margin="0,50,0,0" IsRunning="True" VerticalOptions="Center" HorizontalOptions="Center" Color="Black" WidthRequest="30" HeightRequest="30" ></ActivityIndicator>
                             <Label x:Name="lblLoadingText" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center" VerticalTextAlignment="Center" Text="Loading..."></Label>
                         </StackLayout>
                     </StackLayout>
                 </ContentView>
+                -->
             </StackLayout>
         </AbsoluteLayout>
     </ContentPage.Content>

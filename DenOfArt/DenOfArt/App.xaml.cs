@@ -1,4 +1,5 @@
-﻿using DenOfArt.Views;
+﻿using Android.Content.Res;
+using DenOfArt.Views;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -10,11 +11,12 @@ namespace DenOfArt
         public static string _apiURL { get; set; }
         public App()
         {
-            NavigationPage.SetHasNavigationBar(this, false);
+            //NavigationPage.SetHasNavigationBar(this, false);
             App._apiURL = "https://mysterious-brook-25806.herokuapp.com/";
             //App._apiURL = "http://192.168.1.41:3000";
             InitializeComponent();
             MainPage = new NavigationPage(new LoginPage());
+            //App.Current.MainPage = new LoginPage();
             //MainPage = new NavigationPage(new LocationTrackerPage());
             //MainPage = new NavigationPage(new APITestPage());
         }
