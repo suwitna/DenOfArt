@@ -16,9 +16,8 @@
                       <x:String>หน้าหลัก</x:String>
                       <x:String>โปรไฟล์</x:String>
                       <x:String>ข้อมูลการรักษา</x:String>
-                      <x:String>ข้อมูลการนัดหมาย</x:String>
-                      <x:String>ตั้งค่า</x:String>
-                      <x:String>ออกจากระบบ</x:String>
+                    <x:String>ข้อมูลการนัดหมาย</x:String>
+                    <x:String>ออกจากระบบ</x:String>
                 </x:Array>
       </d:ListView.ItemsSource>
       <ListView.Header>

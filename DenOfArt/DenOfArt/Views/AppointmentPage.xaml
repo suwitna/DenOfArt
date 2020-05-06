@@ -86,7 +86,7 @@
                             Format="HH:mm"
                             
                             BackgroundColor="#DAF5F4"/>
-                <Label Grid.Row="4" Grid.Column="1" Text="หมายเหตุ"/>
+                <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" x:Name="lblSubject" Text="หมายเหตุ"/>
                 
                 <Entry Grid.Row="5" 
                        Grid.Column="1" 

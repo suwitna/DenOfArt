@@ -57,7 +57,7 @@ namespace DenOfArt.Views
             if (item == null)
                 return;
 
-            if (item.Id == 5)
+            if (item.Id == 4)
             {
                 Device.BeginInvokeOnMainThread(async () => {
                     var result = await this.DisplayAlert(null, "ต้องการออกจากระบบ?", "ตกลง", "ยกเลิก");

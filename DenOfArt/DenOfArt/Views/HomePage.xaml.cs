@@ -1,7 +1,4 @@
-﻿using DenOfArt.API;
-using DenOfArt.ViewModels;
-using Refit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,88 +12,70 @@ namespace DenOfArt.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomePage : ContentPage
     {
-        APIRequestHelper apiRequestHelper;
-        IMyAPI myAPI;
         public HomePage()
         {
             InitializeComponent();
-            var currentContext = Android.App.Application.Context;
-
-            myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
-            apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
-
             popupLoadingView.IsVisible = true;
             activityIndicator.IsRunning = true;
 
-            GetHistoryData();
-
-        }
-
-        public async Task GetHistoryData()
-        {
-            var username = Application.Current.Properties["USER_NAME"] as string;
-
-            if (username != null && username != "")
-            {
-                List<AppointmentView> listAppr = new List<AppointmentView>();
-                RootAppointmentObject appointmentData = await apiRequestHelper.RequestAllAppointmentAsync(username);
-                if (appointmentData != null)
-                {
-                    List<AppointmentJson> Data = appointmentData.Data;
-                    if (Data != null)
-                    {
-                        foreach (var data in Data)
-                        {
-                            if (data.IsApprove == "Y" && (data.IsCancel == "Y" || data.IsTreat == "Y"))
-                            {
-
-                            }
-                            else
-                            {
-                                AppointmentView view = new AppointmentView();
-                                view.HN = "หมายเลข HN: " + data.HN;
-                                view.AppointmentDate = data.AppointmentDate;
-                                view.AppointmentTime = data.AppointmentTime;
-                                view.Subject = data.Subject;
-                                view.CustomerName = data.CustomerName;
-                                view.Status = data.Status;
-
-                                view.ImgAcceptReject = "waiting";
-                                
-                                if (data.IsApprove == "Y")
-                                {
-                                    view.ImgAcceptReject = "accept";
-                                }
-                                else if (data.IsPostpone == "Y")
-                                {
-                                    view.CustomerName = "เลื่อนเป็นวันที่ " + data.PostponeDate + " " + data.PostponeTime;
-                                    view.Subject = data.PostponeReason;
-
-                                    view.ImgAcceptReject = "waiting";
-                                }
-                                else if (data.IsCancel == "Y")
-                                {
-                                    view.CustomerName = "ยกเลิกนัด";
-
-                                    view.Subject = data.CancelReason;
-
-                                    view.ImgAcceptReject = "waiting";
-                                }
-
-                                listAppr.Add(view);
-
-                            }
-                        }
-                    }
-                }
-
-                listApprove.ItemsSource = listAppr;
-            }
-
-            Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+            Device.StartTimer(TimeSpan.FromSeconds(0.50), () => {
                 popupLoadingView.IsVisible = false;
                 activityIndicator.IsRunning = false;
                 return true;
+            });
+
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () => {
+                var result = await DisplayAlert("ออกจากแอพพลิเคชั่น", "ท่านกำลังออกจากระบบ โปรดยืนยัน?", "ตกลง", "ยกเลิก");
+                if (result)
+                {
+                    // await this.Navigation.PopAsync(); // or anything else
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                    }
+                }
+            });
+
+            return true;
+        }
+
+        async void Home_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new HomePage());
+        }
+
+        async void Profile_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ProfilePage());
+        }
+
+        async void History_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new HistoryPage());
+        }
+
+        async void Schedule_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SchedulePage());
+        }
+
+
+        async void Setting_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () => {
+                var result = await DisplayAlert("ออกจากแอพพลิเคชั่น", "ท่านกำลังออกจากระบบ โปรดยืนยัน?", "ตกลง", "ยกเลิก");
+                if (result)
+                {
+                    // await this.Navigation.PopAsync(); // or anything else
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                    }
+                }
             });
         }
     }

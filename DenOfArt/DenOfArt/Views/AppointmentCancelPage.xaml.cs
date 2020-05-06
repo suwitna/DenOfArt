@@ -29,8 +29,22 @@ namespace DenOfArt.Views
             myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
 
-            ImageTabFrom.Tapped += ImageTabFrom_Tapped;
+            //ImageTabFrom.Tapped += ImageTabFrom_Tapped;
             CancelAppointment.Clicked += CancelAppointment_Clicked;
+
+            var getDate = Application.Current.Properties["APP_DATE"] as string;
+            var getTime = Application.Current.Properties["APP_TIME"] as string;
+            var getSubject = Application.Current.Properties["APP_SUB"] as string;
+
+            DateTime date = DateTime.ParseExact(getDate, "dd/MM/yyyy", null);
+            TimeSpan time = TimeSpan.ParseExact(getTime, "hh\\:mm", null);
+
+            AppointmentDateFrom.IsEnabled = false;
+            AppointmentTimeFrom.IsEnabled = false;
+
+            AppointmentDateFrom.Date = date;
+            AppointmentTimeFrom.Time = time;
+            lblSubject.Text = "เลื่อนนัด: " + getSubject;
         }
 
         private void ImageTabFrom_Tapped(object sender, EventArgs e)

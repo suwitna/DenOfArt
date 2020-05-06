@@ -1,4 +1,6 @@
-﻿using DenOfArt.API;
+﻿using Android.Content;
+using Android.Widget;
+using DenOfArt.API;
 using DenOfArt.ViewModels;
 using Refit;
 using Syncfusion.SfSchedule.XForms;
@@ -16,8 +18,10 @@ namespace DenOfArt.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SchedulePage : ContentPage
     {
+        Context context;
         APIRequestHelper apiRequestHelper;
         IMyAPI myAPI;
+        bool isAppointmentDate = false;
         public SchedulePage()
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjIyOTkzQDMxMzcyZTM0MmUzMEFiRHhQTms2NTJySzBzZ1dhM2xhTml0RVJxTVBwZ0QrWHVMVjBZblNSMUk9");
@@ -26,14 +30,61 @@ namespace DenOfArt.Views
             activityIndicator.IsRunning = true;
 
             var currentContext = Android.App.Application.Context;
-
+            this.context = currentContext;
             myAPI = RestService.For<IMyAPI>(App._apiURL.ToString());
             apiRequestHelper = new APIRequestHelper(currentContext, myAPI);
 
             AddAppointment.Clicked += AddAppointment_Clicked;
             CancelAppointment.Clicked += CancelAppointment_Clicked;
-
+            schedule.CellTapped += Schedule_CellTapped;
             LoadAppointment();
+        }
+
+        private void Schedule_CellTapped(object sender, CellTappedEventArgs e)
+        {
+            isAppointmentDate = false;
+            List <Object> appointments = e.Appointments;
+            if(appointments != null && appointments.Count > 0)
+            {
+                foreach(var appointment in appointments)
+                {
+                    var data = appointment as ScheduleAppointment;
+                    DateTime start = data.StartTime;
+                    string subject = data.Subject;
+
+                    isAppointmentDate = true;
+                    string appdate = start.ToString("dd/MM/yyyy");
+                    string appTime = start.ToString("hh:mm");
+
+                    if (Application.Current.Properties.ContainsKey("APP_DATE"))
+                    {
+                        Application.Current.Properties["APP_DATE"] = appdate;
+                    }
+                    else 
+                    {
+                        Application.Current.Properties.Add("APP_DATE", appdate);
+                    }
+
+                    if (Application.Current.Properties.ContainsKey("APP_TIME"))
+                    {
+                        Application.Current.Properties["APP_TIME"] = appTime;
+                    }
+                    else
+                    {
+                        Application.Current.Properties.Add("APP_TIME", appTime);
+                    }
+
+                    if (Application.Current.Properties.ContainsKey("APP_SUB"))
+                    {
+                        Application.Current.Properties["APP_SUB"] = subject;
+                    }
+                    else
+                    {
+                        Application.Current.Properties.Add("APP_SUB", subject);
+                    }
+                    return;
+                }
+            }
         }
 
         public async void LoadAppointment() 
@@ -125,11 +176,21 @@ namespace DenOfArt.Views
         }
         private async void AddAppointment_Clicked(object sender, EventArgs e)
         {
+            if (!isAppointmentDate)
+            {
+                Toast.MakeText(context, "เลือกวันที่มีการนัดหมายก่อน!", ToastLength.Short).Show();
+                return;
+            }
             await Navigation.PushAsync(new AppointmentPage());
         }
 
         private async void CancelAppointment_Clicked(object sender, EventArgs e)
         {
+            if (!isAppointmentDate)
+            {
+                Toast.MakeText(context, "เลือกวันที่มีการนัดหมายก่อน!", ToastLength.Short).Show();
+                return;
+            }
             await Navigation.PushAsync(new AppointmentCancelPage());
         }
 
