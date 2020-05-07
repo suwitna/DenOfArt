@@ -143,7 +143,7 @@ namespace DenOfArt.Views
                             var profile = new ProfileTable()
                             {
                                 UserName = json.UserName,
-                                FirstName = json.FileName,
+                                FirstName = json.FirstName,
                                 LastName = json.LastName,
                                 Gender = (json.Gender == null ? "" : json.Gender),
                                 DateOfBirth = (json.DateOfBirth == null ? "" : json.DateOfBirth),
@@ -168,7 +168,7 @@ namespace DenOfArt.Views
                                 var profile = new ProfileTable()
                                 {
                                     UserName = json.UserName,
-                                    FirstName = json.FileName,
+                                    FirstName = json.FirstName,
                                     LastName = json.LastName,
                                     Gender = (json.Gender == null ? "" : json.Gender),
                                     DateOfBirth = (json.DateOfBirth == null ? "" : json.DateOfBirth),
